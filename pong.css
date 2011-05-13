@@ -1,10 +1,13 @@
-body    { background-color: black; color: #AAA; font-size: 12pt; }
+body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; min-width: 60em; }
 
-#sidebar           { width:18em; float: left; font-size: 0.825em; }
-#game              { margin-left: 20em; padding: 1em; }
-#unsupported       { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
+#sidebar     { width: 10em; height: 30em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
+#sidebar h1  { color: #1080F0; }
+#game        { margin-left: 2em; }
+#unsupported { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
 
-a          { color: #1080F0; text-decoration: none;      }
-a:visited  { color: #1080F0;                             }
-a:hover    { color: #1080F0; text-decoration: underline; }
-a.selected { color: #F08010;                             }
+#sidebar .settings        { line-height: 2em; height: 2em; text-align: right; }
+#sidebar .settings.size   { }
+#sidebar .settings.speed  { margin-bottom: 1em; }
+#sidebar .settings label  { vertical-align: middle; }
+#sidebar .settings input  { vertical-align: middle; }
+#sidebar .settings select { vertical-align: middle; }

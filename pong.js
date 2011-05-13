@@ -231,8 +231,8 @@ Pong = {
   Court: {
 
     initialize: function(pong) {
-      var w = pong.width;
-      var h = pong.height;
+      var w  = pong.width;
+      var h  = pong.height;
       var ww = pong.wallWidth;
 
       this.ww    = ww;
@@ -240,11 +240,12 @@ Pong = {
       this.walls.push({x: 0, y: 0,      width: w, height: ww});
       this.walls.push({x: 0, y: h - ww, width: w, height: ww});
       var nMax = (h / (ww*2));
-      for(var n = 0 ; n < nMax ; n++) {
+      for(var n = 0 ; n < nMax ; n++) { // draw dashed halfway line
         this.walls.push({x: (w / 2) - (ww / 2), 
                          y: (ww / 2) + (ww * 2 * n), 
                          width: ww, height: ww});
       }
+
       var sw = 3*ww;
       var sh = 4*ww;
       this.score1 = {x: 0.5 + (w/2) - 1.5*ww - sw, y: 2*ww, w: sw, h: sh};

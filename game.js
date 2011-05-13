@@ -83,7 +83,7 @@ Game = {
       return Object.construct(Game.Runner, id, game, config);
   },
 
-  ua: function() {
+  ua: function() { // should avoid user agent sniffing... but sometimes you just gotta do what you gotta do
     var ua  = navigator.userAgent.toLowerCase();
     var key =        ((ua.indexOf("opera")   > -1) ? "opera"   : null);
         key = key || ((ua.indexOf("firefox") > -1) ? "firefox" : null);
@@ -111,13 +111,8 @@ Game = {
     }
   }(),
 
-  addEvent: function(obj, type, fn) {
-    obj.addEventListener(type, fn, false);
-  },
-
-  removeEvent: function(obj, type, fn) {
-    obj.removeEventListener(type, fn, false);
-  },
+  addEvent:    function(obj, type, fn) { obj.addEventListener(type, fn, false);    },
+  removeEvent: function(obj, type, fn) { obj.removeEventListener(type, fn, false); },
 
   ready: function(fn) {
     Game.addEvent(document, 'DOMContentLoaded', fn);
@@ -220,7 +215,7 @@ Game = {
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
       this.lastFrame = Game.timestamp();
       this.resetStats();
-      setInterval(this.loop.bind(this), this.interval);
+      this.timer = setInterval(this.loop.bind(this), this.interval);
     },
 
     loop: function() {
@@ -233,6 +228,10 @@ Game = {
 
     pause:   function() { this.paused = true;  },
     unpause: function() { this.paused = false; this.lastFrame = Game.timestamp(); }, // avoid sending huge dt values in the next update()
+
+    stop: function() {
+      clearInterval(this.timer);
+    },
 
     update: function(dt) {
       if (!this.paused)
