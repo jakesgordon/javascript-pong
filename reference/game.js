@@ -111,13 +111,18 @@ Object.extend(Game, { /* class methods */
 
   loadImages: function(sources, callback) { /* load multiple images and callback when ALL have finished loading */
     var images = {};
-    var count = sources.length;
-    for(var n = 0 ; n < sources.length ; n++) {
-      var source = sources[n];
-      var image = document.createElement('img');
-      images[source] = image;
-      Game.addEvent(image, 'load', function() { if (--count == 0) callback(images); });
-      image.src = source;
+    var count = sources ? sources.length : 0;
+    if (count == 0) {
+      callback(images);
+    }
+    else {
+      for(var n = 0 ; n < sources.length ; n++) {
+        var source = sources[n];
+        var image = document.createElement('img');
+        images[source] = image;
+        Game.addEvent(image, 'load', function() { if (--count == 0) callback(images); });
+        image.src = source;
+      }
     }
   },
 
@@ -174,10 +179,7 @@ Game.prototype = { /* instance methods */
     this.debug        = config.debug || (location.href.indexOf("grdebug") > 0);
     this.showStats    = this.debug;
 
-    if (game.Images)
-      Game.loadImages(game.Images, this.initGame.bind(this, game, config));
-    else
-      this.initGame(game, config, []);
+    Game.loadImages(game.Images, this.initGame.bind(this, game, config));
   },
 
   initGame: function(game, customConfig, images) {
