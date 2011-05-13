@@ -30,7 +30,6 @@ TODO
  * Change pong.js to use Object.create pattern
  * Need to 'pause' while alert/confirm instead of just hacking timesetamp
  * Change numbers to rendered blocks instead of images
- * REBOUND OFF PADDLE AT QUIRKY ANGLES
 
  * THINK MORE CAREFULLY ABOUT ARTICLES
 
