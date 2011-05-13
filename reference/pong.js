@@ -201,7 +201,7 @@ Pong = {
   Sounds: {
 
     initialize: function(pong) {
-      this.supported = false; //Game.ua.hasAudio;
+      this.supported = Game.ua.hasAudio;
       if (this.supported) {
         this.files = {
           ping: Game.createAudio("sounds/ping.wav"),
@@ -220,7 +220,7 @@ Pong = {
     ping: function() { this.play('ping'); },
     pong: function() { this.play('pong'); },
     wall: function() { /*this.play('wall');*/ },
-    goal: function() { this.play('goal'); }
+    goal: function() { /*this.play('goal');*/ }
 
   },
 

@@ -129,7 +129,9 @@ Game = {
 
   createAudio: function(src) {
     try {
-      return new Audio(src);
+      var a = new Audio(src);
+      a.volume = 0.1; // lets be real quiet please
+      return a;
     } catch (e) {
       return null;
     }
