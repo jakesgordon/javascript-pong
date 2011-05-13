@@ -8,7 +8,7 @@
 //  Object.extend:        (defacto standard like jquery $.extend or prototype's Object.extend)
 //
 //=============================================================================
-  
+
 if (!Function.prototype.bind) {
   Function.prototype.bind = function(obj) {
     var slice = [].slice,
