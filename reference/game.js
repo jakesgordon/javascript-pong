@@ -229,8 +229,12 @@ Game = {
       this.lastFrame = start;
     },
 
+    pause:   function() { this.paused = true;  },
+    unpause: function() { this.paused = false; this.lastFrame = Game.timestamp(); }, // avoid sending huge dt values in the next update()
+
     update: function(dt) {
-      this.game.update(dt);
+      if (!this.paused)
+        this.game.update(dt);
     },
 
     draw: function() {
@@ -279,14 +283,16 @@ Game = {
     showCursor: function() { this.canvas.style.cursor = 'auto'; },
 
     alert: function(msg) {
-      result = window.alert(msg);        // window.alert blocks the thread...
-      this.lastFrame = Game.timestamp(); // so we need to avoid sending huge dt values in the next update()
+      this.pause();
+      result = window.alert(msg);
+      this.unpause();
       return result;
     },
 
     confirm: function(msg) {
-      result = window.confirm(msg);      // window.confirm blocks the thread...
-      this.lastFrame = Game.timestamp(); // so we need to avoid sending huge dt values in the next update()
+      this.pause();
+      result = window.confirm(msg);
+      this.unpause();
       return result;
     }
 
