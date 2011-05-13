@@ -156,23 +156,23 @@ Pong.prototype = {
 
   onkeydown: function(keyCode) {
     switch(keyCode) {
-      case GameRunner.KEY.ZERO: this.startDemo();            break;
-      case GameRunner.KEY.ONE:  this.startSinglePlayer();    break;
-      case GameRunner.KEY.TWO:  this.startDoublePlayer();    break;
-      case GameRunner.KEY.ESC:  this.stop(true);             break;
-      case GameRunner.KEY.Q:    if (!this.leftPaddle.auto)  this.leftPaddle.moveUp();    break;
-      case GameRunner.KEY.A:    if (!this.leftPaddle.auto)  this.leftPaddle.moveDown();  break;
-      case GameRunner.KEY.P:    if (!this.rightPaddle.auto) this.rightPaddle.moveUp();   break;
-      case GameRunner.KEY.L:    if (!this.rightPaddle.auto) this.rightPaddle.moveDown(); break;
+      case Game.KEY.ZERO: this.startDemo();            break;
+      case Game.KEY.ONE:  this.startSinglePlayer();    break;
+      case Game.KEY.TWO:  this.startDoublePlayer();    break;
+      case Game.KEY.ESC:  this.stop(true);             break;
+      case Game.KEY.Q:    if (!this.leftPaddle.auto)  this.leftPaddle.moveUp();    break;
+      case Game.KEY.A:    if (!this.leftPaddle.auto)  this.leftPaddle.moveDown();  break;
+      case Game.KEY.P:    if (!this.rightPaddle.auto) this.rightPaddle.moveUp();   break;
+      case Game.KEY.L:    if (!this.rightPaddle.auto) this.rightPaddle.moveDown(); break;
     }
   },
 
   onkeyup: function(keyCode) {
     switch(keyCode) {
-      case GameRunner.KEY.Q: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingUp();    break;
-      case GameRunner.KEY.A: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingDown();  break;
-      case GameRunner.KEY.P: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingUp();   break;
-      case GameRunner.KEY.L: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingDown(); break;
+      case Game.KEY.Q: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingUp();    break;
+      case Game.KEY.A: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingDown();  break;
+      case Game.KEY.P: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingUp();   break;
+      case Game.KEY.L: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingDown(); break;
     }
   }
 
@@ -212,13 +212,13 @@ Pong.Menu.prototype = {
 //=============================================================================
 
 Pong.Sounds = function(pong) {
-  this.supported = false; //GameRunner.ua.hasAudio;
+  this.supported = false; //Game.ua.hasAudio;
   if (this.supported) {
     this.files = {
-      ping: GameRunner.createAudio("sounds/ping.wav"),
-      pong: GameRunner.createAudio("sounds/pong.wav"),
-      wall: GameRunner.createAudio("sounds/wall.wav"),
-      goal: GameRunner.createAudio("sounds/goal.wav")
+      ping: Game.createAudio("sounds/ping.wav"),
+      pong: Game.createAudio("sounds/pong.wav"),
+      wall: Game.createAudio("sounds/wall.wav"),
+      goal: Game.createAudio("sounds/goal.wav")
     };
   }
 };
@@ -395,7 +395,7 @@ Pong.Paddle.prototype = {
       this.prediction.exactY = this.prediction.y;
       var closeness = (ball.dx < 0 ? ball.x - this.right : this.left - ball.x) / this.pong.width;
       var error = this.level.aiError * closeness;
-      this.prediction.y = this.prediction.y + GameRunner.random(-error, error);
+      this.prediction.y = this.prediction.y + Game.random(-error, error);
     }
   },
 
@@ -441,7 +441,7 @@ Pong.Ball.prototype = {
 
   reset: function(playerNo) {
     this.footprints = [];
-    this.setpos(playerNo == 1 ?   this.maxX : this.minX,  GameRunner.random(this.minY, this.maxY));
+    this.setpos(playerNo == 1 ?   this.maxX : this.minX,  Game.random(this.minY, this.maxY));
     this.setdir(playerNo == 1 ? -this.speed : this.speed, this.speed);
   },
 

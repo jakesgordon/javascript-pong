@@ -33,23 +33,23 @@ if (!Object.extend) {
 }
 
 //=============================================================================
-// GAME RUNNER
+// GAME
 //=============================================================================
 
-GameRunner = function(id, game, config) { /* constructor */
+Game = function(id, game, config) { /* constructor */
   this.init(id, game, config);
 };
 
 //-----------------------------------------------------------------------------
 
-Object.extend(GameRunner, { /* class methods */
+Object.extend(Game, { /* class methods */
 
   compatible: function() {
-    return GameRunner.ua.hasCanvas;
+    return Game.ua.hasCanvas;
   },
 
   start: function(id, game, config) {
-    return GameRunner.compatible() ? new GameRunner(id, game, config) : null;
+    return Game.compatible() ? new Game(id, game, config) : null;
   },
 
   ua: function() {
@@ -116,7 +116,7 @@ Object.extend(GameRunner, { /* class methods */
       var source = sources[n];
       var image = document.createElement('img');
       images[source] = image;
-      GameRunner.addEvent(image, 'load', function() { if (--count == 0) callback(images); });
+      Game.addEvent(image, 'load', function() { if (--count == 0) callback(images); });
       image.src = source;
     }
   },
@@ -159,14 +159,14 @@ Object.extend(GameRunner, { /* class methods */
 
 //-----------------------------------------------------------------------------
 
-GameRunner.prototype = { /* instance methods */
+Game.prototype = { /* instance methods */
 
   init: function(id, game, config) {
     this.fps          = 60;
     this.interval     = 1000.0 / this.fps;
     this.canvas       = document.getElementById(id);
     this.front        = this.canvas;
-    this.back         = GameRunner.createCanvas();
+    this.back         = Game.createCanvas();
     this.back.width   = this.front.width;
     this.back.height  = this.front.height;
     this.front2d      = this.front.getContext('2d');
@@ -175,7 +175,7 @@ GameRunner.prototype = { /* instance methods */
     this.showStats    = this.debug;
 
     if (game.Images)
-      GameRunner.loadImages(game.Images, this.initGame.bind(this, game, config));
+      Game.loadImages(game.Images, this.initGame.bind(this, game, config));
     else
       this.initGame(game, config, []);
   },
@@ -188,17 +188,17 @@ GameRunner.prototype = { /* instance methods */
     config.height = this.canvas.height;                        // add height
     config.images = images;                                    // add images
     this.game = new game(this, config);                        // ... and finally construct the game object
-    GameRunner.addEvent(document, 'keydown', this.onkeydown.bind(this));
-    GameRunner.addEvent(document, 'keyup',   this.onkeyup.bind(this));
-    this.lastFrame = GameRunner.timestamp();
+    Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
+    Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
+    this.lastFrame = Game.timestamp();
     this.resetStats();
     setInterval(this.loop.bind(this), this.interval);
   },
 
   loop: function() {
-    var start  = GameRunner.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
-    var middle = GameRunner.timestamp(); this.draw();
-    var end    = GameRunner.timestamp();
+    var start  = Game.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
+    var middle = Game.timestamp(); this.draw();
+    var end    = Game.timestamp();
     this.updateStats(middle - start, end - middle);
     this.lastFrame = start;
   },
@@ -258,13 +258,13 @@ GameRunner.prototype = { /* instance methods */
 
   alert: function(msg) {
     result = window.alert(msg);              // window.alert blocks the thread...
-    this.lastFrame = GameRunner.timestamp(); // so we need to avoid sending huge dt values in the next update()
+    this.lastFrame = Game.timestamp(); // so we need to avoid sending huge dt values in the next update()
     return result;
   },
 
   confirm: function(msg) {
     result = window.confirm(msg);            // window.confirm blocks the thread...
-    this.lastFrame = GameRunner.timestamp(); // so we need to avoid sending huge dt values in the next update()
+    this.lastFrame = Game.timestamp(); // so we need to avoid sending huge dt values in the next update()
     return result;
   }
 
