@@ -52,6 +52,18 @@ if (!Object.extend) {
   };
 }
 
+/* NOT READY FOR PRIME TIME
+if (!window.requestAnimationFrame) {// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+  window.requestAnimationFrame = window.webkitRequestAnimationFrame || 
+                                 window.mozRequestAnimationFrame    || 
+                                 window.oRequestAnimationFrame      || 
+                                 window.msRequestAnimationFrame     || 
+                                 function(callback, element) {
+                                   window.setTimeout(callback, 1000 / 60);
+                                 }
+}
+*/
+
 //=============================================================================
 // GAME
 //=============================================================================
@@ -232,35 +244,31 @@ Game = {
     resetStats: function() {
       if (this.showStats) {
         this.stats = {
-          count: 0, fps: 0,
-          update: { total: 0, average: 0 },
-          draw:   { total: 0, average: 0 },
-          frame:  { total: 0, average: 0 }  // update + draw
+          count:  0,
+          fps:    0,
+          update: 0,
+          draw:   0, 
+          frame:  0  // update + draw
         };
       }
     },
 
     updateStats: function(update, draw) {
       if (this.showStats) {
-        if (this.stats.count >= this.fps) // only keep averages for 1 second
-          this.stats.update.total = this.stats.draw.total = this.stats.frame.total = this.stats.count = 0;
-        this.stats.update.total  += update;
-        this.stats.draw.total    += draw;
-        this.stats.frame.total   += update + draw;
-        this.stats.count         += 1;
-        this.stats.update.average = Math.round(this.stats.update.total / this.stats.count);
-        this.stats.draw.average   = Math.round(this.stats.draw.total   / this.stats.count);
-        this.stats.frame.average  = Math.round(this.stats.frame.total  / this.stats.count);
-        this.stats.fps            = Math.min(this.fps, Math.round(1000/this.stats.frame.average));
+        this.stats.update = Math.max(1, update);
+        this.stats.draw   = Math.max(1, draw);
+        this.stats.frame  = this.stats.update + this.stats.draw;
+        this.stats.count  = this.stats.count == this.fps ? 0 : this.stats.count + 1;
+        this.stats.fps    = Math.min(this.fps, 1000 / this.stats.frame);
       }
     },
 
     drawStats: function(ctx) {
       if (this.showStats) {
-        ctx.fillText("frame: "  + this.stats.count,                 this.back.width - 100, this.back.height - 60);
-        ctx.fillText("fps: "    + this.stats.fps,                   this.back.width - 100, this.back.height - 50);
-        ctx.fillText("update: " + this.stats.update.average + "ms", this.back.width - 100, this.back.height - 40);
-        ctx.fillText("draw: "   + this.stats.draw.average   + "ms", this.back.width - 100, this.back.height - 30);
+        ctx.fillText("frame: "  + this.stats.count,         this.back.width - 100, this.back.height - 60);
+        ctx.fillText("fps: "    + this.stats.fps,           this.back.width - 100, this.back.height - 50);
+        ctx.fillText("update: " + this.stats.update + "ms", this.back.width - 100, this.back.height - 40);
+        ctx.fillText("draw: "   + this.stats.draw   + "ms", this.back.width - 100, this.back.height - 30);
       }
     },
 
