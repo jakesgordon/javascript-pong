@@ -62,6 +62,7 @@ Game = {
     return Object.create &&
            Object.extend &&
            Function.bind &&
+           document.addEventListener && // HTML5 standard, all modern browsers that support canvas should also support add/removeEventListener
            Game.ua.hasCanvas
   },
 
@@ -98,21 +99,16 @@ Game = {
     }
   }(),
 
-  addEvent: function( obj, type, fn ) {   // http://ejohn.org/blog/flexible-javascript-events/
-    if ( obj.attachEvent ) {
-      obj['e'+type+fn] = fn;
-      obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
-      obj.attachEvent( 'on'+type, obj[type+fn] );
-    } else
-      obj.addEventListener( type, fn, false );
+  addEvent: function(obj, type, fn) {
+    obj.addEventListener(type, fn, false);
   },
 
-  removeEvent: function( obj, type, fn ) {   // http://ejohn.org/blog/flexible-javascript-events/
-    if ( obj.detachEvent ) {
-      obj.detachEvent( 'on'+type, obj[type+fn] );
-      obj[type+fn] = null;
-    } else
-      obj.removeEventListener( type, fn, false );
+  removeEvent: function(obj, type, fn) {
+    obj.removeEventListener(type, fn, false);
+  },
+
+  ready: function(fn) {
+    Game.addEvent(document, 'DOMContentLoaded', fn);
   },
 
   createCanvas: function() {
