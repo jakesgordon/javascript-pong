@@ -20,7 +20,7 @@ Pong = {
     walls:           'white',
     ball:            'white',
     score:           'white',
-    footprint:       '#1080F0',
+    footprint:       '#333',
     predictionGuess: 'yellow',
     predictionExact: 'red'
   },
@@ -415,6 +415,7 @@ Pong = {
         this.prediction.since = 0;
         this.prediction.dx = ball.dx;
         this.prediction.dy = ball.dy;
+        this.prediction.radius = ball.radius;
         this.prediction.exactX = this.prediction.x;
         this.prediction.exactY = this.prediction.y;
         var closeness = (ball.dx < 0 ? ball.x - this.right : this.left - ball.x) / this.pong.width;
@@ -428,15 +429,9 @@ Pong = {
       ctx.fillRect(this.x, this.y, this.width, this.height);
       if (this.prediction && this.pong.predictions) {
         ctx.strokeStyle = Pong.Colors.predictionExact;
-        ctx.beginPath();
-        ctx.arc(this.prediction.x, this.prediction.exactY, 5, 0, 2*Math.PI, true);
-        ctx.stroke();
-        ctx.closePath();
+        ctx.strokeRect(this.prediction.x - this.prediction.radius, this.prediction.exactY - this.prediction.radius, this.prediction.radius*2, this.prediction.radius*2);
         ctx.strokeStyle = Pong.Colors.predictionGuess;
-        ctx.beginPath();
-        ctx.arc(this.prediction.x, this.prediction.y, 5, 0, 2*Math.PI, true);
-        ctx.stroke();
-        ctx.closePath();
+        ctx.strokeRect(this.prediction.x - this.prediction.radius, this.prediction.y - this.prediction.radius, this.prediction.radius*2, this.prediction.radius*2);
       }
     },
 
