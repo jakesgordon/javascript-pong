@@ -45,14 +45,14 @@ GameRunner = function(id, game, config) { /* constructor */
 Object.extend(GameRunner, { /* class methods */
 
   compatible: function() {
-    return GameRunner.hasCanvas;
+    return GameRunner.ua.hasCanvas;
   },
 
   start: function(id, game, config) {
     return GameRunner.compatible() ? new GameRunner(id, game, config) : null;
   },
 
-  detectBrowser: function() {
+  ua: function() {
     var ua  = navigator.userAgent.toLowerCase();
     var key =        ((ua.indexOf("opera")   > -1) ? "opera"   : null);
         key = key || ((ua.indexOf("firefox") > -1) ? "firefox" : null);
@@ -67,9 +67,9 @@ Object.extend(GameRunner, { /* class methods */
     } catch (e) {}
 
     return {
-      ua:        ua, 
-      uaName:    key + (version ? " " + version.toString() : ""),
-      uaVersion: version,
+      full:      ua, 
+      name:      key + (version ? " " + version.toString() : ""),
+      version:   version,
       isFirefox: (key == "firefox"),
       isChrome:  (key == "chrome"),
       isSafari:  (key == "safari"),
@@ -78,7 +78,7 @@ Object.extend(GameRunner, { /* class methods */
       hasCanvas: (document.createElement('canvas').getContext),
       hasAudio:  (typeof(Audio) != 'undefined')
     }
-  },
+  }(),
 
   addEvent: function( obj, type, fn ) {   // http://ejohn.org/blog/flexible-javascript-events/
     if ( obj.attachEvent ) {
@@ -156,8 +156,6 @@ Object.extend(GameRunner, { /* class methods */
   }
 
 });
-
-Object.extend(GameRunner, GameRunner.detectBrowser()); /* add browser properties to GameRunner class */
 
 //-----------------------------------------------------------------------------
 

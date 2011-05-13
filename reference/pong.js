@@ -212,7 +212,7 @@ Pong.Menu.prototype = {
 //=============================================================================
 
 Pong.Sounds = function(pong) {
-  this.supported = false //GameRunner.hasAudio;
+  this.supported = false; //GameRunner.ua.hasAudio;
   if (this.supported) {
     this.files = {
       ping: GameRunner.createAudio("sounds/ping.wav"),
