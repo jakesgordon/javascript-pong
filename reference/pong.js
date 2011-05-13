@@ -5,9 +5,9 @@
 Pong = {
 
   Defaults: {
-    wallWidth:    10,
-    paddleWidth:  10,
-    paddleHeight: 60,
+    wallWidth:    15,
+    paddleWidth:  15,
+    paddleHeight: 80,
     paddleSpeed:  2,     // should be able to cross court vertically   in 2 seconds
     ballSpeed:    4,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
     ballAccel:    8,     // ... but accelerate as time passes
@@ -483,11 +483,8 @@ Pong = {
         pos.dy = -pos.dy;
       }
 
-      var pt;
-      if (pos.dx < 0)
-        pt = Pong.Helper.ballIntercept(this, leftPaddle, pos.nx, pos.ny);
-      else if (pos.dx > 0)
-        pt = Pong.Helper.ballIntercept(this, rightPaddle, pos.nx, pos.ny);
+      var paddle = (pos.dx < 0) ? leftPaddle : rightPaddle;
+      var pt     = Pong.Helper.ballIntercept(this, paddle, pos.nx, pos.ny);
 
       if (pt) {
         switch(pt.d) {
@@ -502,6 +499,12 @@ Pong = {
             pos.dy = -pos.dy;
             break;
         }
+
+        // add/remove spin based on paddle direction
+        if (paddle.up)
+          pos.dy = pos.dy * (pos.dy < 0 ? 0.5 : 1.5);
+        else if (paddle.down)
+          pos.dy = pos.dy * (pos.dy > 0 ? 0.5 : 1.5);
       }
 
       this.setpos(pos.x,  pos.y);

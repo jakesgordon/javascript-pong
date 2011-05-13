@@ -257,10 +257,10 @@ Game = {
 
     drawStats: function(ctx) {
       if (this.showStats) {
-        ctx.fillText("frame: "  + this.stats.count,                 this.back.width - 100, this.back.height - 50);
-        ctx.fillText("fps: "    + this.stats.fps,                   this.back.width - 100, this.back.height - 40);
-        ctx.fillText("update: " + this.stats.update.average + "ms", this.back.width - 100, this.back.height - 30);
-        ctx.fillText("draw: "   + this.stats.draw.average   + "ms", this.back.width - 100, this.back.height - 20);
+        ctx.fillText("frame: "  + this.stats.count,                 this.back.width - 100, this.back.height - 60);
+        ctx.fillText("fps: "    + this.stats.fps,                   this.back.width - 100, this.back.height - 50);
+        ctx.fillText("update: " + this.stats.update.average + "ms", this.back.width - 100, this.back.height - 40);
+        ctx.fillText("draw: "   + this.stats.draw.average   + "ms", this.back.width - 100, this.back.height - 30);
       }
     },
 

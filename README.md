@@ -29,7 +29,6 @@ TODO
 ====
  * Need to 'pause' while alert/confirm instead of just hacking timesetamp
  * Change numbers to rendered blocks instead of images
- * QUIRKY REBOUND ANGLES
 
  * THINK MORE CAREFULLY ABOUT ARTICLES
 
