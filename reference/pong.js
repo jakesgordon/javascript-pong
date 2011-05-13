@@ -11,7 +11,7 @@ Pong = {
     paddleSpeed:  2,     // should be able to cross court vertically   in 2 seconds
     ballSpeed:    4,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
     ballAccel:    8,     // ... but accelerate as time passes
-    ballRadius:   5,
+    ballRadius:   8,
     footprints:   (location.href.indexOf("footprints") > 0),
     predictions:  (location.href.indexOf("prediction") > 0)
   },
@@ -19,22 +19,13 @@ Pong = {
   Colors: {
     walls:           'white',
     ball:            'white',
+    score:           'white',
     footprint:       '#1080F0',
     predictionGuess: 'yellow',
     predictionExact: 'red'
   },
 
   Images: [
-    "images/0.png", 
-    "images/1.png", 
-    "images/2.png", 
-    "images/3.png", 
-    "images/4.png", 
-    "images/5.png", 
-    "images/6.png", 
-    "images/7.png", 
-    "images/8.png", 
-    "images/9.png",
     "images/press1.png",
     "images/press2.png",
     "images/winner.png"
@@ -182,11 +173,10 @@ Pong = {
       var press1 = pong.images["images/press1.png"];
       var press2 = pong.images["images/press2.png"];
       var winner = pong.images["images/winner.png"];
-      var number = pong.images["images/0.png"];
-      this.press1  = { image: press1, x: 10,                                             y: pong.wallWidth                };
-      this.press2  = { image: press2, x: (pong.width - press2.width - 10),               y: pong.wallWidth                };
-      this.winner1 = { image: winner, x: (pong.width/2) - winner.width - pong.wallWidth, y: pong.wallWidth + number.width };
-      this.winner2 = { image: winner, x: (pong.width/2)                + pong.wallWidth, y: pong.wallWidth + number.width };
+      this.press1  = { image: press1, x: 10,                                             y: pong.wallWidth     };
+      this.press2  = { image: press2, x: (pong.width - press2.width - 10),               y: pong.wallWidth     };
+      this.winner1 = { image: winner, x: (pong.width/2) - winner.width - pong.wallWidth, y: 6 * pong.wallWidth };
+      this.winner2 = { image: winner, x: (pong.width/2)                + pong.wallWidth, y: 6 * pong.wallWidth };
     },
 
     declareWinner: function(playerNo) {
@@ -245,10 +235,7 @@ Pong = {
       var h = pong.height;
       var ww = pong.wallWidth;
 
-      this.numbers = [];
-      for(var n = 0 ; n < 10 ; n++)
-        this.numbers[n] = pong.images["images/" + n + ".png"]
-
+      this.ww    = ww;
       this.walls = [];
       this.walls.push({x: 0, y: 0,      width: w, height: ww});
       this.walls.push({x: 0, y: h - ww, width: w, height: ww});
@@ -258,17 +245,52 @@ Pong = {
                          y: (ww / 2) + (ww * 2 * n), 
                          width: ww, height: ww});
       }
-      this.score1 = {x: (w/2) - this.numbers[0].width - ww, y: ww};
-      this.score2 = {x: (w/2) + ww,                         y: ww};
+      var sw = 3*ww;
+      var sh = 4*ww;
+      this.score1 = {x: 0.5 + (w/2) - 1.5*ww - sw, y: 2*ww, w: sw, h: sh};
+      this.score2 = {x: 0.5 + (w/2) + 1.5*ww,      y: 2*ww, w: sw, h: sh};
     },
 
     draw: function(ctx, scorePlayer1, scorePlayer2) {
       ctx.fillStyle = Pong.Colors.walls;
-      ctx.drawImage(this.numbers[scorePlayer1], this.score1.x, this.score1.y);
-      ctx.drawImage(this.numbers[scorePlayer2], this.score2.x, this.score2.y);
       for(var n = 0 ; n < this.walls.length ; n++)
         ctx.fillRect(this.walls[n].x, this.walls[n].y, this.walls[n].width, this.walls[n].height);
-    }
+      this.drawDigit(ctx, scorePlayer1, this.score1.x, this.score1.y, this.score1.w, this.score1.h);
+      this.drawDigit(ctx, scorePlayer2, this.score2.x, this.score2.y, this.score2.w, this.score2.h);
+    },
+
+    drawDigit: function(ctx, n, x, y, w, h) {
+      ctx.fillStyle = Pong.Colors.score;
+      var dw = dh = this.ww*2/3;
+      var blocks = Pong.Court.DIGITS[n];
+      if (blocks[0])
+        ctx.fillRect(x, y, w, dh);
+      if (blocks[1])
+        ctx.fillRect(x, y, dw, h/2);
+      if (blocks[2])
+        ctx.fillRect(x+w-dw, y, dw, h/2);
+      if (blocks[3])
+        ctx.fillRect(x, y + h/2 - dh/2, w, dh);
+      if (blocks[4])
+        ctx.fillRect(x, y + h/2, dw, h/2);
+      if (blocks[5])
+        ctx.fillRect(x+w-dw, y + h/2, dw, h/2);
+      if (blocks[6])
+        ctx.fillRect(x, y+h-dh, w, dh);
+    },
+
+    DIGITS: [
+      [1, 1, 1, 0, 1, 1, 1], // 0
+      [0, 0, 1, 0, 0, 1, 0], // 1
+      [1, 0, 1, 1, 1, 0, 1], // 2
+      [1, 0, 1, 1, 0, 1, 1], // 3
+      [0, 1, 1, 1, 0, 1, 0], // 4
+      [1, 1, 0, 1, 0, 1, 1], // 5
+      [1, 1, 0, 1, 1, 1, 1], // 6
+      [1, 0, 1, 0, 0, 1, 0], // 7
+      [1, 1, 1, 1, 1, 1, 1], // 8
+      [1, 1, 1, 1, 0, 1, 0]  // 9
+    ]
 
   },
 

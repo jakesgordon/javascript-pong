@@ -28,10 +28,8 @@ Part 3 - Keyboard Input
 TODO
 ====
  * Need to 'pause' while alert/confirm instead of just hacking timesetamp
- * Change numbers to rendered blocks instead of images
 
  * THINK MORE CAREFULLY ABOUT ARTICLES
-
  * Test in older FF to check ECMA5 methods
  * UI to toggle on/off
     - debug
