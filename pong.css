@@ -1,8 +1,9 @@
 body    { background-color: black; color: #AAA; font-size: 12pt; }
 
-#sidebar { width:18em; float: left; font-size: 0.825em; }
-#game    { margin-left: 20em; padding: 1em; }
+#sidebar           { width:18em; float: left; font-size: 0.825em; }
+#game              { margin-left: 20em; padding: 1em; }
 
-a         { text-decoration: none; color: lightblue; }
-a:visited { text-decoration: none; color: lightblue; }
-a:hover   { text-decoration: underline; }
+a          { text-decoration: none; color: #1080F0; }
+a:visited  { text-decoration: none; color: #1080F0; }
+a:hover    { text-decoration: underline; }
+a.selected { color: #F08010; }

@@ -1,15 +1,12 @@
 //=============================================================================
-// GLOBAL HELPER METHODS (might already be provided by prototype.js et al)
+// Function.bind
+//
+// part of ECMAScript 5 and is provided native in some modern browsers, but
+// in older browsers we need to implement it ourselves:
+//  (see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind)
+//
 //=============================================================================
-
-if (!Object.extend) {
-  Object.extend = function(destination, source) {
-    for (var property in source)
-      destination[property] = source[property];
-    return destination;
-  };
-}
-
+  
 if (!Function.prototype.bind) {
   Function.prototype.bind = function(){
     var _$A = function(a){return Array.prototype.slice.call(a);}
@@ -18,6 +15,20 @@ if (!Function.prototype.bind) {
     return function() {
       return __method.apply(object, args.concat(_$A(arguments)));
     }
+  };
+}
+
+//=============================================================================
+// Object.extend - shallow merge of source properties into target
+//
+// Provided by many 3rd party libraries (e.g. jquery $.extend or prototype Object.extend)
+// but we might have to provide it ourself if no libraries are being used for this game.
+//=============================================================================
+if (!Object.extend) {
+  Object.extend = function(destination, source) {
+    for (var property in source)
+      destination[property] = source[property];
+    return destination;
   };
 }
 
