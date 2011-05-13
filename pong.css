@@ -4,7 +4,7 @@ body    { background-color: black; color: #AAA; font-size: 12pt; }
 #game              { margin-left: 20em; padding: 1em; }
 #unsupported       { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
 
-a          { text-decoration: none; color: #1080F0; }
-a:visited  { text-decoration: none; color: #1080F0; }
-a:hover    { text-decoration: underline; }
-a.selected { color: #F08010; }
+a          { color: #1080F0; text-decoration: none;      }
+a:visited  { color: #1080F0;                             }
+a:hover    { color: #1080F0; text-decoration: underline; }
+a.selected { color: #F08010;                             }
