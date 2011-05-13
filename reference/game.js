@@ -7,8 +7,8 @@
 //  Object.create:        http://javascript.crockford.com/prototypal.html
 //  Object.extend:        (defacto standard like jquery $.extend or prototype's Object.extend)
 //
-//  Object.init:          our own wrapper around Object.create that ALSO calls
-//                        an init constructor method if one exists
+//  Object.construct:     our own wrapper around Object.create that ALSO calls
+//                        an initialize constructor method if one exists
 //
 //=============================================================================
 
@@ -35,11 +35,13 @@ if (!Object.create) {
   }
 }
 
-Object.init = function(base) { // Object.create PLUS call 'init' constructor method if it has one
-  var instance = Object.create(base);
-  if (instance.init)
-    instance.init.apply(instance, [].slice.call(arguments, 1));
-  return instance;
+if (!Object.construct) {
+  Object.construct = function(base) {
+    var instance = Object.create(base);
+    if (instance.initialize)
+      instance.initialize.apply(instance, [].slice.call(arguments, 1));
+    return instance;
+  }
 }
 
 if (!Object.extend) {
@@ -54,7 +56,7 @@ if (!Object.extend) {
 // GAME
 //=============================================================================
 
-Game = { /* static methods */
+Game = {
 
   compatible: function() {
     return Object.create &&
@@ -63,9 +65,9 @@ Game = { /* static methods */
            Game.ua.hasCanvas
   },
 
-  start: function(id, game, config) {debugger;
+  start: function(id, game, config) {
     if (Game.compatible())
-      return Object.init(Game.Runner, id, game, config);
+      return Object.construct(Game.Runner, id, game, config);
   },
 
   ua: function() {
@@ -178,9 +180,9 @@ Game = { /* static methods */
 
   //-----------------------------------------------------------------------------
 
-  Runner: { /* instance methods */
+  Runner: {
 
-    init: function(id, game, config) {
+    initialize: function(id, game, config) {
       this.fps          = 60;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = document.getElementById(id);
@@ -193,17 +195,17 @@ Game = { /* static methods */
       this.debug        = config.debug || (location.href.indexOf("debug") > 0);
       this.showStats    = this.debug;
 
-      Game.loadImages(game.Images, this.initGame.bind(this, game, config));
+      Game.loadImages(game.Images, this.startGame.bind(this, game, config));
     },
 
-    initGame: function(game, customConfig, images) {
+    startGame: function(game, customConfig, images) {
       var config = {};                                           // build up config object to pass to game constructor...
       Object.extend(config, game.Defaults ? game.Defaults : {}); // start off with game defaults (if any)
       Object.extend(config, customConfig  ? customConfig  : {}); // extend with customized config (if any)
       config.width  = this.canvas.width;                         // add width
       config.height = this.canvas.height;                        // add height
       config.images = images;                                    // add images
-      this.game = new game(this, config);                        // ... and finally construct the game object
+      this.game = Object.construct(game, this, config);          // ... and finally construct the game object
       Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
       this.lastFrame = Game.timestamp();
