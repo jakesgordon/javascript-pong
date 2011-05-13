@@ -75,7 +75,7 @@ Object.extend(GameRunner, { /* class methods */
       isSafari:  (key == "safari"),
       isOpera:   (key == "opera"),
       isIE:      (key == "ie"),
-      hasCanvas: (document.createElement('canvas').getContext || (typeof(G_vmlCanvasManager) != 'undefined')),
+      hasCanvas: (document.createElement('canvas').getContext),
       hasAudio:  (typeof(Audio) != 'undefined')
     }
   },
@@ -98,10 +98,7 @@ Object.extend(GameRunner, { /* class methods */
   },
 
   createCanvas: function() {
-    var c = document.createElement('canvas');
-    if (GameRunner.isIE)
-      G_vmlCanvasManager.initElement(c);
-    return c;
+    return document.createElement('canvas');
   },
 
   createAudio: function(src) {
@@ -213,19 +210,11 @@ GameRunner.prototype = { /* instance methods */
   },
 
   draw: function() {
-    if (GameRunner.isIE) {
-      // iecanvas doesn't support drawing one canvas onto another, so draw directly onto front buffer
-      this.front2d.clearRect(0, 0, this.front.width, this.front.height);
-      this.game.draw(this.front2d);
-      this.drawStats(this.front2d);
-    }
-    else {
-      this.back2d.clearRect(0, 0, this.back.width, this.back.height);
-      this.game.draw(this.back2d);
-      this.drawStats(this.back2d);
-      this.front2d.clearRect(0, 0, this.front.width, this.front.width);
-      this.front2d.drawImage(this.back, 0, 0);
-    }
+    this.back2d.clearRect(0, 0, this.back.width, this.back.height);
+    this.game.draw(this.back2d);
+    this.drawStats(this.back2d);
+    this.front2d.clearRect(0, 0, this.front.width, this.front.width);
+    this.front2d.drawImage(this.back, 0, 0);
   },
 
   resetStats: function() {
