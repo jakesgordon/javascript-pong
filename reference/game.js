@@ -7,6 +7,9 @@
 //  Object.create:        http://javascript.crockford.com/prototypal.html
 //  Object.extend:        (defacto standard like jquery $.extend or prototype's Object.extend)
 //
+//  Object.init:          our own wrapper around Object.create that ALSO calls
+//                        an init constructor method if one exists
+//
 //=============================================================================
 
 if (!Function.prototype.bind) {
@@ -32,6 +35,13 @@ if (!Object.create) {
   }
 }
 
+Object.init = function(base) { // Object.create PLUS call 'init' constructor method if it has one
+  var instance = Object.create(base);
+  if (instance.init)
+    instance.init.apply(instance, [].slice.call(arguments, 1));
+  return instance;
+}
+
 if (!Object.extend) {
   Object.extend = function(destination, source) {
     for (var property in source)
@@ -53,12 +63,9 @@ Game = { /* static methods */
            Game.ua.hasCanvas
   },
 
-  start: function(id, game, config) {
-    if (Game.compatible()) {
-      var g = Object.create(Game.Runner);
-      g.start(id, game, config);
-      return g;
-    }
+  start: function(id, game, config) {debugger;
+    if (Game.compatible())
+      return Object.init(Game.Runner, id, game, config);
   },
 
   ua: function() {
@@ -173,7 +180,7 @@ Game = { /* static methods */
 
   Runner: { /* instance methods */
 
-    start: function(id, game, config) {
+    init: function(id, game, config) {
       this.fps          = 60;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = document.getElementById(id);
