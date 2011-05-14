@@ -487,15 +487,23 @@ Pong = {
     },
 
     setdir: function(dx, dy) {
+      this.dxChanged = ((this.dx < 0) != (dx < 0)); // did horizontal direction change
+      this.dyChanged = ((this.dy < 0) != (dy < 0)); // did vertical direction change
       this.dx = dx;
       this.dy = dy;
     },
 
     footprint: function() {
       if (this.pong.cfg.footprints) {
-        this.footprints.push({x: this.x, y: this.y});
-        if (this.footprints.length > 50)
-          this.footprints.shift();
+        if (!this.footprintCount || this.dxChanged || this.dyChanged) {
+          this.footprints.push({x: this.x, y: this.y});
+          if (this.footprints.length > 50)
+            this.footprints.shift();
+          this.footprintCount = 5;
+        }
+        else {
+          this.footprintCount--;
+        }
       }
     },
 
