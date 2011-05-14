@@ -1,7 +1,7 @@
 body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; min-width: 60em; }
 
 #sidebar     { width: 10em; height: 30em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
-#sidebar h1  { color: #1080F0; }
+#sidebar h2  { color: #F08010; text-align: center; }
 #game        { margin-left: 2em; }
 #unsupported { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
 
