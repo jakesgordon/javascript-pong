@@ -5,18 +5,11 @@
 Pong = {
 
   Defaults: {
-    width:        640,   // logical canvas width (browser will scale to physical canvas size - which is controlled by @media css queries)
-    height:       480,   // logical canvas height (ditto)
-    wallWidth:    12,
-    ballSpeed:    10,    // should be able to cross court horizontally in 10 seconds, at starting speed ...
-    ballAccel:    8,     // ... but accelerate as time passes
-    ballRadius:   5,
-    stats:        true
-  },
-
-  Colors: {
-    walls: 'white',
-    ball:  '#F08010',
+    width:     640,   // logical canvas width (browser will scale to physical canvas size - which is controlled by @media css queries)
+    height:    480,   // logical canvas height (ditto)
+    wallWidth: 10,
+    balls:     20,
+    stats:     true
   },
 
   //-----------------------------------------------------------------------------
@@ -27,17 +20,26 @@ Pong = {
     this.width  = runner.width;
     this.height = runner.height;
     this.court  = Object.construct(Pong.Court,  this);
-    this.ball   = Object.construct(Pong.Ball,   this);
+    this.balls  = this.constructBalls();
     this.runner.start();
   },
 
+  constructBalls: function() {
+    var balls = [];
+    for(var n = 0 ; n < this.cfg.balls ; n++)
+      balls.push(Object.construct(Pong.Ball, this));
+    return balls;
+  },
+
   update: function(dt) {
-    this.ball.update(dt);
+    for(var n = 0 ; n < this.balls.length ; n++)
+      this.balls[n].update(dt);
   },
 
   draw: function(ctx) {
     this.court.draw(ctx);
-    this.ball.draw(ctx);
+    for(var n = 0 ; n < this.balls.length; n++)
+      this.balls[n].draw(ctx);
   },
 
   //=============================================================================
@@ -59,7 +61,7 @@ Pong = {
     },
 
     draw: function(ctx) {
-      ctx.fillStyle = Pong.Colors.walls;
+      ctx.fillStyle = '#F08010';
       for(var n = 0 ; n < this.walls.length ; n++)
         ctx.fillRect(this.walls[n].x, this.walls[n].y, this.walls[n].width, this.walls[n].height);
     }
@@ -74,85 +76,51 @@ Pong = {
 
     initialize: function(pong) {
       this.pong    = pong;
-      this.radius  = pong.cfg.ballRadius;
+      this.radius  = Game.random(1, 30);
       this.minX    = pong.cfg.wallWidth + this.radius;
       this.minY    = pong.cfg.wallWidth + this.radius;
       this.maxX    = pong.width  - pong.cfg.wallWidth - this.radius;
       this.maxY    = pong.height - pong.cfg.wallWidth - this.radius;
-      this.speed   = (this.maxX - this.minX) / pong.cfg.ballSpeed;
-      this.accel   = pong.cfg.ballAccel;
-      this.reset();
-    },
-
-    reset: function() {
-      this.setpos(this.minX,  Game.random(this.minY, this.maxY));
-      this.setdir(this.speed, this.speed);
-    },
-
-    setpos: function(x, y) {
-      this.x      = x;
-      this.y      = y;
-      this.left   = this.x - this.radius;
-      this.top    = this.y - this.radius;
-      this.right  = this.x + this.radius;
-      this.bottom = this.y + this.radius;
-    },
-
-    setdir: function(dx, dy) {
-      this.dx = dx;
-      this.dy = dy;
+      this.x       = Game.random(this.minX, this.maxX);
+      this.y       = Game.random(this.minY, this.maxY);
+      this.dx      = (this.maxX - this.minX) / (Game.random(1, 10) * Game.randomChoice(1, -1));
+      this.dy      = (this.maxY - this.minY) / (Game.random(1, 10) * Game.randomChoice(1, -1));
+      this.color   = "rgb(" + Math.round(Game.random(0,255)) + ", " + Math.round(Game.random(0,255)) + ", " + Math.round(Game.random(0,255)) + ")";
     },
 
     update: function(dt, leftPaddle, rightPaddle) {
 
-      pos = Pong.Helper.accelerate(this.x, this.y, this.dx, this.dy, this.accel, dt);
+      this.x = this.x + (this.dx * dt);
+      this.y = this.y + (this.dy * dt);
 
-      if ((pos.dx > 0) && (pos.x > this.maxX)) {
-        pos.x = this.maxX;
-        pos.dx = -pos.dx;
+      if ((this.dx > 0) && (this.x > this.maxX)) {
+        this.x = this.maxX;
+        this.dx = -this.dx;
       }
-      else if ((pos.dx < 0) && (pos.x < this.minX)) {
-        pos.x = this.minX;
-        pos.dx = -pos.dx;
-      }
-
-      if ((pos.dy > 0) && (pos.y > this.maxY)) {
-        pos.y = this.maxY;
-        pos.dy = -pos.dy;
-      }
-      else if ((pos.dy < 0) && (pos.y < this.minY)) {
-        pos.y = this.minY;
-        pos.dy = -pos.dy;
+      else if ((this.dx < 0) && (this.x < this.minX)) {
+        this.x = this.minX;
+        this.dx = -this.dx;
       }
 
-      this.setpos(pos.x,  pos.y);
-      this.setdir(pos.dx, pos.dy);
+      if ((this.dy > 0) && (this.y > this.maxY)) {
+        this.y = this.maxY;
+        this.dy = -this.dy;
+      }
+      else if ((this.dy < 0) && (this.y < this.minY)) {
+        this.y = this.minY;
+        this.dy = -this.dy;
+      }
     },
 
     draw: function(ctx) {
       var w = h = this.radius * 2;
-      ctx.fillStyle = Pong.Colors.ball;
-      ctx.fillRect(this.x - this.radius, this.y - this.radius, w, h);
-    }
-
-  },
-
-  //=============================================================================
-  // HELPER
-  //=============================================================================
-
-  Helper: {
-
-    accelerate: function(x, y, dx, dy, accel, dt) {
-      var x2  = x + (dt * dx) + (accel * dt * dt * 0.5);
-      var y2  = y + (dt * dy) + (accel * dt * dt * 0.5);
-      var dx2 = dx + (accel * dt) * (dx > 0 ? 1 : -1);
-      var dy2 = dy + (accel * dt) * (dy > 0 ? 1 : -1);
-      return { nx: (x2-x), ny: (y2-y), x: x2, y: y2, dx: dx2, dy: dy2 };
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI, true);
+      ctx.fill();
+      ctx.closePath();
     }
 
   }
-
-  //=============================================================================
 
 }; // Pong
