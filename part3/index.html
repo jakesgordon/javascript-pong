@@ -21,6 +21,32 @@
       <li><a href='/part5'><i>computer AI</i> - Part 5</a></li>
     </ul>
 
+    <div class='description'>
+      <p>
+        The classic game loop starts with a menu, waits for a user to start the game, runs
+        the game until there is a winner, or the user abandons it, and then goes back to the menu.
+      </p>
+      <p>
+        Here we have hooked up keyboard events to allow the user to move the paddles up and
+        down, start a 1 or 2 player game, and abandon the game in progress.
+      </p>
+      <p>
+        Press <b>1</b> for a single player game.<br>
+        Press <b>2</b> for a double player game.<br>
+        Press <b>0</b> to watch the computer play itself.
+      </p>
+      <p>
+        Player 1 moves using the <b>Q</b> and <b>A</b> keys.<br>
+        Player 2 moves using the <b>P</b> and <b>L</b> keys.
+      </p>
+      <p>
+        <b>Esc</b> can be used to abandon a game.
+      </p>
+      <p>
+        <b>NOTE:</b> The paddles will be innefective until we implement collision detection in the next section. 
+      </p>
+    </div>
+
   </div>
 
   <canvas id="game">
