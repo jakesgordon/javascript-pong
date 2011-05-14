@@ -33,15 +33,29 @@ Part 2 - Pong - Bouncing Ball
  * Drawing the Court
  * 
 
+Part 3 - Pong - Game Loop
+=========================
+
+ * Introduction
+ * Drawing the Menu
+ * Drawing the Paddles
+ * Keyboard Input
+ * Scoring
+ * Abandoning a Game
+
+
 Part 4 - Pong - Collision Detection
 ===================================
+
+ * Introduction
+ * Ball and Paddle Interception
 
 
 Part 5 - Pong - Computer AI
 ===========================
 
-
-
+Part 6 - Sounds, Media Queries and Miscellaneous
+================================================
 
 NOTES
 =====
