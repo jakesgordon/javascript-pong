@@ -12,8 +12,6 @@ Pong = {
     ballSpeed:    4,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
     ballAccel:    8,     // ... but accelerate as time passes
     ballRadius:   8,
-    footprints:   (location.href.indexOf("footprints") > 0),
-    predictions:  (location.href.indexOf("prediction") > 0),
     sound:        true
   },
 
@@ -55,8 +53,8 @@ Pong = {
   //-----------------------------------------------------------------------------
 
   initialize: function(runner, cfg) {
-    Object.extend(this, cfg);
     Game.loadImages(Pong.Images, function(images) {
+      this.cfg         = cfg;
       this.runner      = runner;
       this.width       = runner.width;
       this.height      = runner.height;
@@ -68,7 +66,7 @@ Pong = {
       this.leftPaddle  = Object.construct(Pong.Paddle, this);
       this.rightPaddle = Object.construct(Pong.Paddle, this, true);
       this.ball        = Object.construct(Pong.Ball,   this);
-      this.sounds      = Object.construct(Pong.Sounds, this, this.sound);
+      this.sounds      = Object.construct(Pong.Sounds, this);
       this.runner.start();
     }.bind(this));
   },
@@ -170,10 +168,10 @@ Pong = {
     }
   },
 
-  showStats:       function(on) { this.runner.cfg.stats = on; },
-  showFootprints:  function(on) { this.ball.footprints = []; this.footprints = on; },
-  showPredictions: function(on) { this.predictions = on; },
-  enableSound:     function(on) { this.sounds.enabled = on; },
+  showStats:       function(on) { this.cfg.stats = on; },
+  showFootprints:  function(on) { this.cfg.footprints = on; this.ball.footprints = []; },
+  showPredictions: function(on) { this.cfg.predictions = on; },
+  enableSound:     function(on) { this.cfg.sound = on; },
 
   //=============================================================================
   // MENU
@@ -185,10 +183,10 @@ Pong = {
       var press1 = pong.images["images/press1.png"];
       var press2 = pong.images["images/press2.png"];
       var winner = pong.images["images/winner.png"];
-      this.press1  = { image: press1, x: 10,                                             y: pong.wallWidth     };
-      this.press2  = { image: press2, x: (pong.width - press2.width - 10),               y: pong.wallWidth     };
-      this.winner1 = { image: winner, x: (pong.width/2) - winner.width - pong.wallWidth, y: 6 * pong.wallWidth };
-      this.winner2 = { image: winner, x: (pong.width/2)                + pong.wallWidth, y: 6 * pong.wallWidth };
+      this.press1  = { image: press1, x: 10,                                             y: pong.cfg.wallWidth     };
+      this.press2  = { image: press2, x: (pong.width - press2.width - 10),               y: pong.cfg.wallWidth     };
+      this.winner1 = { image: winner, x: (pong.width/2) - winner.width - pong.cfg.wallWidth, y: 6 * pong.cfg.wallWidth };
+      this.winner2 = { image: winner, x: (pong.width/2)                + pong.cfg.wallWidth, y: 6 * pong.cfg.wallWidth };
     },
 
     declareWinner: function(playerNo) {
@@ -212,9 +210,9 @@ Pong = {
 
   Sounds: {
 
-    initialize: function(pong, enabled) {
+    initialize: function(pong) {
+      this.game      = pong;
       this.supported = Game.ua.hasAudio;
-      this.enabled   = enabled;
       if (this.supported) {
         this.files = {
           ping: Game.createAudio("sounds/ping.wav"),
@@ -226,7 +224,7 @@ Pong = {
     },
 
     play: function(name) {
-      if (this.supported && this.enabled && this.files[name])
+      if (this.supported && this.game.cfg.sound && this.files[name])
         this.files[name].play();
     },
 
@@ -246,7 +244,7 @@ Pong = {
     initialize: function(pong) {
       var w  = pong.width;
       var h  = pong.height;
-      var ww = pong.wallWidth;
+      var ww = pong.cfg.wallWidth;
 
       this.ww    = ww;
       this.walls = [];
@@ -316,11 +314,11 @@ Pong = {
 
     initialize: function(pong, rhs) {
       this.pong   = pong;
-      this.width  = pong.paddleWidth;
-      this.height = pong.paddleHeight;
-      this.minY   = pong.wallWidth;
-      this.maxY   = pong.height - pong.wallWidth - this.height;
-      this.speed  = (this.maxY - this.minY) / pong.paddleSpeed;
+      this.width  = pong.cfg.paddleWidth;
+      this.height = pong.cfg.paddleHeight;
+      this.minY   = pong.cfg.wallWidth;
+      this.maxY   = pong.height - pong.cfg.wallWidth - this.height;
+      this.speed  = (this.maxY - this.minY) / pong.cfg.paddleSpeed;
       this.setpos(rhs ? pong.width - this.width : 0, this.minY + (this.maxY - this.minY)/2);
       this.setdir(0);
     },
@@ -441,7 +439,7 @@ Pong = {
     draw: function(ctx) {
       ctx.fillStyle = Pong.Colors.walls;
       ctx.fillRect(this.x, this.y, this.width, this.height);
-      if (this.prediction && this.pong.predictions) {
+      if (this.prediction && this.pong.cfg.predictions) {
         ctx.strokeStyle = Pong.Colors.predictionExact;
         ctx.strokeRect(this.prediction.x - this.prediction.radius, this.prediction.exactY - this.prediction.radius, this.prediction.radius*2, this.prediction.radius*2);
         ctx.strokeStyle = Pong.Colors.predictionGuess;
@@ -464,13 +462,13 @@ Pong = {
 
     initialize: function(pong) {
       this.pong    = pong;
-      this.radius  = pong.ballRadius;
+      this.radius  = pong.cfg.ballRadius;
       this.minX    = this.radius;
       this.maxX    = pong.width - this.radius;
-      this.minY    = pong.wallWidth + this.radius;
-      this.maxY    = pong.height - pong.wallWidth - this.radius;
-      this.speed   = (this.maxX - this.minX) / pong.ballSpeed;
-      this.accel   = pong.ballAccel;
+      this.minY    = pong.cfg.wallWidth + this.radius;
+      this.maxY    = pong.height - pong.cfg.wallWidth - this.radius;
+      this.speed   = (this.maxX - this.minX) / pong.cfg.ballSpeed;
+      this.accel   = pong.cfg.ballAccel;
     },
 
     reset: function(playerNo) {
@@ -494,7 +492,7 @@ Pong = {
     },
 
     footprint: function() {
-      if (this.pong.footprints) {
+      if (this.pong.cfg.footprints) {
         this.footprints.push({x: this.x, y: this.y});
         if (this.footprints.length > 50)
           this.footprints.shift();
@@ -547,7 +545,7 @@ Pong = {
       var w = h = this.radius * 2;
       ctx.fillStyle = Pong.Colors.ball;
       ctx.fillRect(this.x - this.radius, this.y - this.radius, w, h);
-      if (this.pong.footprints) {
+      if (this.pong.cfg.footprints) {
         var max = this.footprints.length;
         ctx.strokeStyle = Pong.Colors.footprint;
         for(var n = 0 ; n < max ; n++)

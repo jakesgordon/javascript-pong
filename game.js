@@ -238,15 +238,13 @@ Game = {
     },
 
     resetStats: function() {
-      if (this.cfg.stats) {
-        this.stats = {
-          count:  0,
-          fps:    0,
-          update: 0,
-          draw:   0, 
-          frame:  0  // update + draw
-        };
-      }
+      this.stats = {
+        count:  0,
+        fps:    0,
+        update: 0,
+        draw:   0, 
+        frame:  0  // update + draw
+      };
     },
 
     updateStats: function(update, draw) {
