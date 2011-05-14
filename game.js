@@ -78,9 +78,9 @@ Game = {
            Game.ua.hasCanvas
   },
 
-  start: function(id, game, config) {
+  start: function(id, game, cfg) {
     if (Game.compatible())
-      return Object.construct(Game.Runner, id, game, config).game; // return the game instance, not the runner (caller can always get at the runner via game.runner)
+      return Object.construct(Game.Runner, id, game, cfg).game; // return the game instance, not the runner (caller can always get at the runner via game.runner)
   },
 
   ua: function() { // should avoid user agent sniffing... but sometimes you just gotta do what you gotta do
@@ -187,23 +187,23 @@ Game = {
 
   Runner: {
 
-    initialize: function(id, game, config) {
-      this.config       = Object.extend(game.Defaults || {}, config || {}); // use game defaults (if any) and extend with custom config (if any)
-      this.fps          = this.config.fps || 60;
+    initialize: function(id, game, cfg) {
+      this.cfg          = Object.extend(game.Defaults || {}, cfg || {}); // use game defaults (if any) and extend with custom cfg (if any)
+      this.fps          = this.cfg.fps || 60;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = document.getElementById(id);
       this.width        = this.canvas.width;
       this.height       = this.canvas.height;
       this.front        = this.canvas;
       this.back         = Game.createCanvas();
-      this.back.width   = this.front.width;
-      this.back.height  = this.front.height;
+      this.back.width   = this.width;
+      this.back.height  = this.height;
       this.front2d      = this.front.getContext('2d');
       this.back2d       = this.back.getContext('2d');
       this.addEvents();
       this.resetStats();
 
-      this.game = Object.construct(game, this, this.config); // finally construct the game object itself
+      this.game = Object.construct(game, this, this.cfg); // finally construct the game object itself
     },
 
     addEvents: function() {
@@ -230,15 +230,15 @@ Game = {
     },
 
     draw: function() {
-      this.back2d.clearRect(0, 0, this.back.width, this.back.height);
+      this.back2d.clearRect(0, 0, this.width, this.height);
       this.game.draw(this.back2d);
       this.drawStats(this.back2d);
-      this.front2d.clearRect(0, 0, this.front.width, this.front.width);
+      this.front2d.clearRect(0, 0, this.width, this.height);
       this.front2d.drawImage(this.back, 0, 0);
     },
 
     resetStats: function() {
-      if (this.config.stats) {
+      if (this.cfg.stats) {
         this.stats = {
           count:  0,
           fps:    0,
@@ -250,7 +250,7 @@ Game = {
     },
 
     updateStats: function(update, draw) {
-      if (this.config.stats) {
+      if (this.cfg.stats) {
         this.stats.update = Math.max(1, update);
         this.stats.draw   = Math.max(1, draw);
         this.stats.frame  = this.stats.update + this.stats.draw;
@@ -260,11 +260,11 @@ Game = {
     },
 
     drawStats: function(ctx) {
-      if (this.config.stats) {
-        ctx.fillText("frame: "  + this.stats.count,         this.back.width - 100, this.back.height - 60);
-        ctx.fillText("fps: "    + this.stats.fps,           this.back.width - 100, this.back.height - 50);
-        ctx.fillText("update: " + this.stats.update + "ms", this.back.width - 100, this.back.height - 40);
-        ctx.fillText("draw: "   + this.stats.draw   + "ms", this.back.width - 100, this.back.height - 30);
+      if (this.cfg.stats) {
+        ctx.fillText("frame: "  + this.stats.count,         this.width - 100, this.height - 60);
+        ctx.fillText("fps: "    + this.stats.fps,           this.width - 100, this.height - 50);
+        ctx.fillText("update: " + this.stats.update + "ms", this.width - 100, this.height - 40);
+        ctx.fillText("draw: "   + this.stats.draw   + "ms", this.width - 100, this.height - 30);
       }
     },
 

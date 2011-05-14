@@ -54,10 +54,9 @@ Pong = {
 
   //-----------------------------------------------------------------------------
 
-  initialize: function(runner, config) {
-    Object.extend(this, config);
+  initialize: function(runner, cfg) {
+    Object.extend(this, cfg);
     Game.loadImages(Pong.Images, function(images) {
-      this.config      = config;
       this.runner      = runner;
       this.width       = runner.width;
       this.height      = runner.height;
@@ -171,7 +170,7 @@ Pong = {
     }
   },
 
-  showStats:       function(on) { this.runner.config.stats = on; },
+  showStats:       function(on) { this.runner.cfg.stats = on; },
   showFootprints:  function(on) { this.ball.footprints = []; this.footprints = on; },
   showPredictions: function(on) { this.predictions = on; },
   enableSound:     function(on) { this.sounds.enabled = on; },
