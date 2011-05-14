@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>Pong!</title> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+  <link href="../pong.css" media="screen, print" rel="stylesheet" type="text/css" /> 
+</head> 
+ 
+<body> 
+
+  <div id="sidebar">
+
+    <h2>Bouncing Ball</h2>
+
+  </div>
+
+  <canvas id="game">
+    <div id="unsupported">
+      Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
+    </div>
+  </canvas>
+
+  <script src="game.js" type="text/javascript"></script> 
+  <script src="pong.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  Game.ready(function() {
+    Game.start('game', Pong);
+  });
+  </script>
+
+</body> 
+</html>

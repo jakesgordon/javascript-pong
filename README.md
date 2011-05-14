@@ -6,29 +6,26 @@ This is a small experiment to implement a version of the classic Pong game in an
  * You can find the [code here](https://github.com/jakesgordon/javascript-pong)
  * You can find out [how it works](http://codeincomplete.com/5/14/2011/introducing_pong)
 
-Part 1 - Game.Runner Pre-requisites
+Part 1 - Game.Runner
 ===================================
 
  * Introduction
- * HTML5 <canvas>
- * Function.bind
- * Object.create
- * Object.construct
- * Object.extend
- * addEventListener / removeEventListener
- * DOMContentLoaded
- * User Agent Sniffing
- * Loading Images
+ * Pre-requisites
+   * HTML5 <canvas>
+   * Function.bind
+   * Object.create
+   * Object.construct
+   * Object.extend
+   * addEventListener / removeEventListener
+   * DOMContentLoaded
+   * User Agent Sniffing
+   * Loading Images
+ * The Game Loop
+   * Initialize Runner
+   * Construct Game Instance
+   * Game Loop
 
-Part 2 - Game.Runner Loop
-=========================
-
- * Introduction
- * Initialize Runner
- * Construct Game Instance
- * Game Loop
-
-Part 3 - Pong - Bouncing Ball
+Part 2 - Pong - Bouncing Ball
 =============================
 
  * Introduction
