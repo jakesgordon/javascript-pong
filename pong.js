@@ -5,13 +5,13 @@
 Pong = {
 
   Defaults: {
-    wallWidth:    15,
-    paddleWidth:  15,
-    paddleHeight: 80,
+    wallWidth:    12,
+    paddleWidth:  12,
+    paddleHeight: 60,
     paddleSpeed:  2,     // should be able to cross court vertically   in 2 seconds
     ballSpeed:    4,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
     ballAccel:    8,     // ... but accelerate as time passes
-    ballRadius:   8,
+    ballRadius:   5,
     sound:        true
   },
 
@@ -273,7 +273,7 @@ Pong = {
 
     drawDigit: function(ctx, n, x, y, w, h) {
       ctx.fillStyle = Pong.Colors.score;
-      var dw = dh = this.ww*2/3;
+      var dw = dh = this.ww*4/5;
       var blocks = Pong.Court.DIGITS[n];
       if (blocks[0])
         ctx.fillRect(x, y, w, dh);
