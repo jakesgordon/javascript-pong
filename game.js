@@ -200,7 +200,6 @@ Game = {
       this.back.height  = this.front.height;
       this.front2d      = this.front.getContext('2d');
       this.back2d       = this.back.getContext('2d');
-      this.showStats    = this.config.stats || location.href.indexOf("stats") > 0;
       this.addEvents();
       this.resetStats();
 
@@ -239,7 +238,7 @@ Game = {
     },
 
     resetStats: function() {
-      if (this.showStats) {
+      if (this.config.stats) {
         this.stats = {
           count:  0,
           fps:    0,
@@ -251,7 +250,7 @@ Game = {
     },
 
     updateStats: function(update, draw) {
-      if (this.showStats) {
+      if (this.config.stats) {
         this.stats.update = Math.max(1, update);
         this.stats.draw   = Math.max(1, draw);
         this.stats.frame  = this.stats.update + this.stats.draw;
@@ -261,7 +260,7 @@ Game = {
     },
 
     drawStats: function(ctx) {
-      if (this.showStats) {
+      if (this.config.stats) {
         ctx.fillText("frame: "  + this.stats.count,         this.back.width - 100, this.back.height - 60);
         ctx.fillText("fps: "    + this.stats.fps,           this.back.width - 100, this.back.height - 50);
         ctx.fillText("update: " + this.stats.update + "ms", this.back.width - 100, this.back.height - 40);
