@@ -23,9 +23,8 @@
 
     <div class='description'>
       <p>
-      Adding collision detection so that the ball rebounds correctly off the paddle makes
-      the game playable for the first time. There is no computer AI, but a 2 player
-      game is now possible.
+        Adding collision detection makes the game playable for the first time.
+        There is no AI, but a 2 player game is now possible.
       </p>
       <p>
         Using naive collision detection, e.g:
@@ -34,15 +33,15 @@
         paddle in some cases when the frame interval (dt) is large, or the ball 'just misses'.
       </p>
       <p>
-        This is corrected using slightly more complex, but more realistic line intersection calculations.
+        This is corrected using more complex, but realistic line intersection calculations.
       </p>
       <p>
-        This also allows for more realistic behavior when the ball 'just misses' and instead
+        This allows for realistic behavior when the ball 'just misses' and instead
         bounces off the top or bottom of the bat and out for a goal
       </p>
       <p>
-        The collision detection implemented also detects the movement of the paddle and
-        applies a little spin to change the angle of the ball when appropriate
+        The implementation also detects movement of the paddle and
+        applies 'spin' to change the angle of the ball when appropriate
       </p>
 
     </div>
