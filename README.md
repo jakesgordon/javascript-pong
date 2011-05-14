@@ -29,9 +29,6 @@ Part 5 - Computer AI
 
 TODO
 ====
+ * better footprints
  * Test in older FF to check ECMA5 methods
- * UI to toggle on/off
-    - debug
-    - footprints
-    - prediction
 

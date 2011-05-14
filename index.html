@@ -18,18 +18,14 @@
       </select>
     </div>
 
-    <div class='settings speed'>
-      <label for='speed'>speed: </label>
-      <select id='speed'>
-        <option value='1'>fast</option>
-        <option value='4' selected>medium</option>
-        <option value='10'>slow</option>
-      </select>
+    <div class='settings'>
+      <label for='sound'>sound: </label>
+      <input type='checkbox' id='sound'>
     </div>
 
     <div class='settings'>
       <label for='stats'>stats: </label>
-      <input type='checkbox' id='stats'>
+      <input type='checkbox' id='stats' checked>
     </div>
 
     <div class='settings'>
@@ -38,13 +34,8 @@
     </div>
 
     <div class='settings'>
-      <label for='prediction'>prediction: </label>
-      <input type='checkbox' id='prediction'>
-    </div>
-
-    <div class='settings'>
-      <label for='sound'>sound: </label>
-      <input type='checkbox' id='sound'>
+      <label for='predictions'>predictions: </label>
+      <input type='checkbox' id='predictions'>
     </div>
 
   </div>
@@ -60,21 +51,24 @@
   <script type="text/javascript">
   Game.ready(function() {
 
-    var size       = document.getElementById('size');
-    var speed      = document.getElementById('speed');
-    var stats      = document.getElementById('stats');
-    var footprints = document.getElementById('footprints');
+    var size        = document.getElementById('size');
+    var sound       = document.getElementById('sound');
+    var stats       = document.getElementById('stats');
+    var footprints  = document.getElementById('footprints');
+    var predictions = document.getElementById('predictions');
 
-    var go = function() {
-      if (Game.current)
-        Game.current.stop();
-      Game.current = Game.start('game', Pong, {debug: true});
-    }
+    var pong = Game.start('game', Pong, {
+      sound:       sound.checked,
+      stats:       stats.checked,
+      footprints:  footprints.checked,
+      predictions: predictions.checked
+    });
 
-    Game.addEvent(size,  'change', go);
-    Game.addEvent(speed, 'change', go);
+    Game.addEvent(sound,       'change', function() { pong.enableSound(sound.checked);           });
+    Game.addEvent(stats,       'change', function() { pong.showStats(stats.checked);             });
+    Game.addEvent(footprints,  'change', function() { pong.showFootprints(footprints.checked);   });
+    Game.addEvent(predictions, 'change', function() { pong.showPredictions(predictions.checked); });
 
-    go();
   });
   </script>
 

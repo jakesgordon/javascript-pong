@@ -80,7 +80,7 @@ Game = {
 
   start: function(id, game, config) {
     if (Game.compatible())
-      return Object.construct(Game.Runner, id, game, config);
+      return Object.construct(Game.Runner, id, game, config).game; // return the game instance, not the runner (caller can always get at the runner via game.runner)
   },
 
   ua: function() { // should avoid user agent sniffing... but sometimes you just gotta do what you gotta do
@@ -188,35 +188,34 @@ Game = {
   Runner: {
 
     initialize: function(id, game, config) {
-      this.fps          = 60;
+      this.config       = Object.extend(game.Defaults || {}, config || {}); // use game defaults (if any) and extend with custom config (if any)
+      this.fps          = this.config.fps || 60;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = document.getElementById(id);
+      this.width        = this.canvas.width;
+      this.height       = this.canvas.height;
       this.front        = this.canvas;
       this.back         = Game.createCanvas();
       this.back.width   = this.front.width;
       this.back.height  = this.front.height;
       this.front2d      = this.front.getContext('2d');
       this.back2d       = this.back.getContext('2d');
-      this.debug        = config.debug || (location.href.indexOf("debug") > 0);
-      this.showStats    = this.debug;
+      this.showStats    = this.config.stats || location.href.indexOf("stats") > 0;
+      this.addEvents();
+      this.resetStats();
 
-      Game.loadImages(game.Images, this.startGame.bind(this, game, config));
+      this.game = Object.construct(game, this, this.config); // finally construct the game object itself
     },
 
-    startGame: function(game, customConfig, images) {
-      var config = {};                                           // build up config object to pass to game constructor...
-      Object.extend(config, game.Defaults ? game.Defaults : {}); // start off with game defaults (if any)
-      Object.extend(config, customConfig  ? customConfig  : {}); // extend with customized config (if any)
-      config.width  = this.canvas.width;                         // add width
-      config.height = this.canvas.height;                        // add height
-      config.images = images;                                    // add images
-      this.game = Object.construct(game, this, config);          // ... and finally construct the game object
+    addEvents: function() {
       Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
-      this.lastFrame = Game.timestamp();
-      this.resetStats();
-      this.timer = setInterval(this.loop.bind(this), this.interval);
     },
+
+    start:   function() { this.lastFrame = Game.timestamp(); this.timer = setInterval(this.loop.bind(this), this.interval); },
+    stop:    function() { clearInterval(this.timer); },
+    pause:   function() { this.paused = true;  },
+    unpause: function() { this.paused = false; this.lastFrame = Game.timestamp(); }, // avoid sending huge dt values in the next update()
 
     loop: function() {
       var start  = Game.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
@@ -224,13 +223,6 @@ Game = {
       var end    = Game.timestamp();
       this.updateStats(middle - start, end - middle);
       this.lastFrame = start;
-    },
-
-    pause:   function() { this.paused = true;  },
-    unpause: function() { this.paused = false; this.lastFrame = Game.timestamp(); }, // avoid sending huge dt values in the next update()
-
-    stop: function() {
-      clearInterval(this.timer);
     },
 
     update: function(dt) {

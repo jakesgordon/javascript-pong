@@ -13,7 +13,8 @@ Pong = {
     ballAccel:    8,     // ... but accelerate as time passes
     ballRadius:   8,
     footprints:   (location.href.indexOf("footprints") > 0),
-    predictions:  (location.href.indexOf("prediction") > 0)
+    predictions:  (location.href.indexOf("prediction") > 0),
+    sound:        true
   },
 
   Colors: {
@@ -54,16 +55,22 @@ Pong = {
   //-----------------------------------------------------------------------------
 
   initialize: function(runner, config) {
-    Object.extend(this, config); // make all config properties available to this object
-    this.runner      = runner;
-    this.playing     = false;
-    this.scores      = [0, 0];
-    this.menu        = Object.construct(Pong.Menu,   this);
-    this.court       = Object.construct(Pong.Court,  this);
-    this.leftPaddle  = Object.construct(Pong.Paddle, this);
-    this.rightPaddle = Object.construct(Pong.Paddle, this, true);
-    this.ball        = Object.construct(Pong.Ball,   this);
-    this.sounds      = Object.construct(Pong.Sounds, this);
+    Object.extend(this, config);
+    Game.loadImages(Pong.Images, function(images) {
+      this.runner      = runner;
+      this.width       = runner.width;
+      this.height      = runner.height;
+      this.images      = images;
+      this.playing     = false;
+      this.scores      = [0, 0];
+      this.menu        = Object.construct(Pong.Menu,   this);
+      this.court       = Object.construct(Pong.Court,  this);
+      this.leftPaddle  = Object.construct(Pong.Paddle, this);
+      this.rightPaddle = Object.construct(Pong.Paddle, this, true);
+      this.ball        = Object.construct(Pong.Ball,   this);
+      this.sounds      = Object.construct(Pong.Sounds, this, this.sound);
+      this.runner.start();
+    }.bind(this));
   },
 
   startDemo:         function() { this.start(0); },
@@ -163,6 +170,11 @@ Pong = {
     }
   },
 
+  showStats:       function(on) { this.runner.showStats = on; },
+  showFootprints:  function(on) { this.ball.footprints = []; this.footprints = on; },
+  showPredictions: function(on) { this.predictions = on; },
+  enableSound:     function(on) { this.sounds.enabled = on; },
+
   //=============================================================================
   // MENU
   //=============================================================================
@@ -200,8 +212,9 @@ Pong = {
 
   Sounds: {
 
-    initialize: function(pong) {
+    initialize: function(pong, enabled) {
       this.supported = Game.ua.hasAudio;
+      this.enabled   = enabled;
       if (this.supported) {
         this.files = {
           ping: Game.createAudio("sounds/ping.wav"),
@@ -213,7 +226,7 @@ Pong = {
     },
 
     play: function(name) {
-      if (this.supported && this.files[name])
+      if (this.supported && this.enabled && this.files[name])
         this.files[name].play();
     },
 
