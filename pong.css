@@ -1,4 +1,4 @@
-body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; min-width: 60em; }
+body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; }
 
 #sidebar     { width: 10em; height: 30em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
 #sidebar h2  { color: #F08010; text-align: center; }
@@ -11,3 +11,26 @@ body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; min-
 #sidebar .settings label  { vertical-align: middle; }
 #sidebar .settings input  { vertical-align: middle; }
 #sidebar .settings select { vertical-align: middle; }
+
+
+@media screen and (min-width: 0px) {
+  #sidebar { display: none; }
+  #game    { display: block; width: 480px; height: 360px; margin: 0 auto; }
+}
+
+@media screen and (min-width: 800px) {
+  #game    { width: 640px; height: 480px; }
+}
+
+@media screen and (min-width: 1024px) {
+  #sidebar { display: block; }
+  #game    { width: 800px; height: 600px; }
+}
+
+@media screen and (min-width: 1280px) {
+  #game    { width: 1024px; height: 768px; }
+}
+
+@media screen and (min-width: 1600px) {
+  #game    { width: 1280px; height: 1024px; }
+}

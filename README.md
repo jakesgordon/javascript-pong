@@ -28,5 +28,6 @@ Part 5 - Computer AI
 
 TODO
 ====
+ * Touch Event
  * Test in older FF to check ECMA5 methods
 
