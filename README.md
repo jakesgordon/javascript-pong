@@ -3,9 +3,13 @@ Canvas Pong
 
 This is a small experiment to implement a version of the classic Pong game in an HTML <canvas>.
 
-Part 1 - Javascript Pre-requisites
-==================================
+ * You can find the [code here](https://github.com/jakesgordon/javascript-pong)
+ * You can find out [how it works](http://codeincomplete.com/5/14/2011/introducing_pong)
 
+Part 1 - Game.Runner Pre-requisites
+===================================
+
+ * Introduction
  * HTML5 <canvas>
  * Function.bind
  * Object.create
@@ -13,21 +17,36 @@ Part 1 - Javascript Pre-requisites
  * Object.extend
  * addEventListener / removeEventListener
  * DOMContentLoaded
+ * User Agent Sniffing
+ * Loading Images
 
-Part 2 - Basic Game Loop
-========================
+Part 2 - Game.Runner Loop
+=========================
 
-Part 3 - Bouncing Ball
-======================
+ * Introduction
+ * Initialize Runner
+ * Construct Game Instance
+ * Game Loop
 
-Part 4 - Collision Detection
-============================
+Part 3 - Pong - Bouncing Ball
+=============================
 
-Part 5 - Computer AI
-====================
+ * Introduction
+ * Initialization
+ * Drawing the Court
+ * 
 
-TODO
-====
- * Touch Event
- * Test in older FF to check ECMA5 methods
+Part 4 - Pong - Collision Detection
+===================================
 
+
+Part 5 - Pong - Computer AI
+===========================
+
+
+
+
+NOTES
+=====
+
+ * No support for mobile devices (need to handle touch events instead of key input)

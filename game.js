@@ -192,8 +192,8 @@ Game = {
       this.fps          = this.cfg.fps || 60;
       this.interval     = 1000.0 / this.fps;
       this.canvas       = document.getElementById(id);
-      this.width        = 640;  // this.canvas.offsetWidth;
-      this.height       = 480;  // this.canvas.offsetHeight;
+      this.width        = this.cfg.width  || this.canvas.offsetWidth;
+      this.height       = this.cfg.height || this.canvas.offsetHeight;
       this.front        = this.canvas;
       this.front.width  = this.width;
       this.front.height = this.height;
@@ -208,15 +208,14 @@ Game = {
       this.game = Object.construct(game, this, this.cfg); // finally construct the game object itself
     },
 
-    addEvents: function() {
-      Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
-      Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
+    start: function() { // game instance should call runner.start() when its finished initializing and is ready to start the game loop
+      this.lastFrame = Game.timestamp();
+      this.timer     = setInterval(this.loop.bind(this), this.interval);
     },
 
-    start:   function() { this.lastFrame = Game.timestamp(); this.timer = setInterval(this.loop.bind(this), this.interval); },
-    stop:    function() { clearInterval(this.timer); },
-    pause:   function() { this.paused = true;  },
-    unpause: function() { this.paused = false; this.lastFrame = Game.timestamp(); }, // avoid sending huge dt values in the next update()
+    stop: function() {
+      clearInterval(this.timer);
+    },
 
     loop: function() {
       var start  = Game.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
@@ -227,8 +226,7 @@ Game = {
     },
 
     update: function(dt) {
-      if (!this.paused)
-        this.game.update(dt);
+      this.game.update(dt);
     },
 
     draw: function() {
@@ -268,6 +266,11 @@ Game = {
       }
     },
 
+    addEvents: function() {
+      Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
+      Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
+    },
+
     onkeydown: function(ev) { if (this.game.onkeydown) this.game.onkeydown(ev.keyCode); },
     onkeyup:   function(ev) { if (this.game.onkeyup)   this.game.onkeyup(ev.keyCode);   },
 
@@ -275,16 +278,16 @@ Game = {
     showCursor: function() { this.canvas.style.cursor = 'auto'; },
 
     alert: function(msg) {
-      this.pause();
+      this.stop(); // alert blocks thread, so need to stop game loop in order to avoid sending huge dt values to next update
       result = window.alert(msg);
-      this.unpause();
+      this.start();
       return result;
     },
 
     confirm: function(msg) {
-      this.pause();
+      this.stop(); // alert blocks thread, so need to stop game loop in order to avoid sending huge dt values to next update
       result = window.confirm(msg);
-      this.unpause();
+      this.start();
       return result;
     }
 
