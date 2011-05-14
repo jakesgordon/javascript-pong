@@ -29,7 +29,7 @@ Pong = {
     ctx.strokeStyle = 'white'
     ctx.strokeRect(0, 0, this.width, this.height);
 
-    ctx.fillStyle = '#1080F0'
+    ctx.fillStyle = '#F08010'
     ctx.font = '144px sans-serif'
 
     var count = Math.round(this.time).toString();

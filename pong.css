@@ -1,15 +1,23 @@
 body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; }
 
-#sidebar     { width: 10em; height: 30em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
-#sidebar h2  { color: #F08010; text-align: center; }
 #unsupported { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
 
-#sidebar .settings        { line-height: 2em; height: 2em; text-align: right; }
-#sidebar .settings.size   { }
-#sidebar .settings.speed  { margin-bottom: 1em; }
-#sidebar .settings label  { vertical-align: middle; }
-#sidebar .settings input  { vertical-align: middle; }
-#sidebar .settings select { vertical-align: middle; }
+#sidebar                        { width: 12em; height: 30em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
+#sidebar h2                     { color: white; text-align: center; margin: 0; }
+#sidebar .parts                 { padding-left: 1em; list-style-type: none; margin-bottom: 2em; text-align: right; }
+#sidebar .parts li a            { color: white; text-decoration: none; }
+#sidebar .parts li a:visited    { color: white; }
+#sidebar .parts li a:hover      { color: white; text-decoration: underline; }
+#sidebar .parts li a.selected   { color: #F08010; }
+#sidebar .parts li a i          { color: #AAA;    }
+#sidebar .parts li a.selected i { color: #F08010; }
+#sidebar .settings              { line-height: 2em; height: 2em; text-align: right; }
+#sidebar .settings.size         { }
+#sidebar .settings.speed        { margin-bottom: 1em; }
+#sidebar .settings label        { vertical-align: middle; }
+#sidebar .settings input        { vertical-align: middle; }
+#sidebar .settings select       { vertical-align: middle; }
+
 
 
 @media screen and (min-width: 0px) {
