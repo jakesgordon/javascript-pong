@@ -2,7 +2,7 @@ body { background-color: black; color: #AAA; font-size: 12pt; padding: 1em; }
 
 #unsupported { border: 1px solid yellow; color: black; background-color: #FFFFAD; padding: 2em; margin: 1em; display: inline-block; }
 
-#sidebar                        { width: 18em; height: 40em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
+#sidebar                        { width: 18em; height: 45em; float: left; font-size: 0.825em; background-color: #333; border: 1px solid white; padding: 1em;  }
 #sidebar h2                     { color: white; text-align: center; margin: 0; }
 #sidebar .parts                 { padding-left: 1em; list-style-type: none; margin-bottom: 2em; text-align: right; }
 #sidebar .parts li a            { color: white; text-decoration: none; }

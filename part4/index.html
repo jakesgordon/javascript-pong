@@ -1,0 +1,67 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>Pong!</title> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+  <link href="../pong.css" media="screen, print" rel="stylesheet" type="text/css" /> 
+</head> 
+ 
+<body> 
+
+  <div id="sidebar">
+
+    <h2>This is Pong!</h2>
+
+    <ul class='parts'>
+      <li><a href='/'>Full Game</a></li>
+      <li><a href='/part1'><i>game runner</i> - Part 1</a></li>
+      <li><a href='/part2'><i>bouncing ball</i> - Part 2</a></li>
+      <li><a href='/part3'><i>game loop</i> - Part 3</a></li>
+      <li><a href='/part4' class='selected'><i>collision detection</i> - Part 4</a></li>
+      <li><a href='/part5'><i>computer AI</i> - Part 5</a></li>
+    </ul>
+
+    <div class='description'>
+      <p>
+      Adding collision detection so that the ball rebounds correctly off the paddle makes
+      the game playable for the first time. There is no computer AI, but a 2 player
+      game is now possible.
+      </p>
+      <p>
+        Using naive collision detection, e.g:
+          <pre>  ball.x &lt; paddle.x</pre>
+        would work in a lot of cases but can lead to the ball overlapping the
+        paddle in some cases when the frame interval (dt) is large, or the ball 'just misses'.
+      </p>
+      <p>
+        This is corrected using slightly more complex, but more realistic line intersection calculations.
+      </p>
+      <p>
+        This also allows for more realistic behavior when the ball 'just misses' and instead
+        bounces off the top or bottom of the bat and out for a goal
+      </p>
+      <p>
+        The collision detection implemented also detects the movement of the paddle and
+        applies a little spin to change the angle of the ball when appropriate
+      </p>
+
+    </div>
+
+  </div>
+
+  <canvas id="game">
+    <div id="unsupported">
+      Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
+    </div>
+  </canvas>
+
+  <script src="game.js" type="text/javascript"></script> 
+  <script src="pong.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  Game.ready(function() {
+    Game.start('game', Pong);
+  });
+  </script>
+
+</body> 
+</html>

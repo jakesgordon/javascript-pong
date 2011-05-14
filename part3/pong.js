@@ -66,8 +66,6 @@ Pong = {
     if (this.playing) {
       if (!ask || this.runner.confirm('Abandon game in progress ?')) {
         this.playing = false;
-        this.leftPaddle.setAuto(false);
-        this.rightPaddle.setAuto(false);
         this.runner.showCursor();
       }
     }
@@ -115,19 +113,19 @@ Pong = {
       case Game.KEY.ONE:  this.startSinglePlayer();    break;
       case Game.KEY.TWO:  this.startDoublePlayer();    break;
       case Game.KEY.ESC:  this.stop(true);             break;
-      case Game.KEY.Q:    if (!this.leftPaddle.auto)  this.leftPaddle.moveUp();    break;
-      case Game.KEY.A:    if (!this.leftPaddle.auto)  this.leftPaddle.moveDown();  break;
-      case Game.KEY.P:    if (!this.rightPaddle.auto) this.rightPaddle.moveUp();   break;
-      case Game.KEY.L:    if (!this.rightPaddle.auto) this.rightPaddle.moveDown(); break;
+      case Game.KEY.Q:    this.leftPaddle.moveUp();    break;
+      case Game.KEY.A:    this.leftPaddle.moveDown();  break;
+      case Game.KEY.P:    this.rightPaddle.moveUp();   break;
+      case Game.KEY.L:    this.rightPaddle.moveDown(); break;
     }
   },
 
   onkeyup: function(keyCode) {
     switch(keyCode) {
-      case Game.KEY.Q: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingUp();    break;
-      case Game.KEY.A: if (!this.leftPaddle.auto)  this.leftPaddle.stopMovingDown();  break;
-      case Game.KEY.P: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingUp();   break;
-      case Game.KEY.L: if (!this.rightPaddle.auto) this.rightPaddle.stopMovingDown(); break;
+      case Game.KEY.Q: this.leftPaddle.stopMovingUp();    break;
+      case Game.KEY.A: this.leftPaddle.stopMovingDown();  break;
+      case Game.KEY.P: this.rightPaddle.stopMovingUp();   break;
+      case Game.KEY.L: this.rightPaddle.stopMovingDown(); break;
     }
   },
 
