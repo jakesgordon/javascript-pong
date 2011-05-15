@@ -117,7 +117,8 @@ Game = {
   removeEvent: function(obj, type, fn) { obj.removeEventListener(type, fn, false); },
 
   ready: function(fn) {
-    Game.addEvent(document, 'DOMContentLoaded', fn);
+    if (Game.compatible())
+      Game.addEvent(document, 'DOMContentLoaded', fn);
   },
 
   createCanvas: function() {
