@@ -13,3 +13,5 @@ NOTES
 =====
 
  * No support for mobile devices (need to handle touch events instead of key input)
+
+[![Run on Repl.it](https://repl.it/badge/github/jakesgordon/javascript-pong)](https://repl.it/github/jakesgordon/javascript-pong)
