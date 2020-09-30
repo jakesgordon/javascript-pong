@@ -1,4 +1,4 @@
-Canvas Pong
+Canvas Pong : An amazing project 
 ===========
 
 This is a small experiment to implement a version of the classic Pong game in an HTML <canvas>.
