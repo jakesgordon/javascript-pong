@@ -13,6 +13,7 @@
 //=============================================================================
 
 if (!Function.prototype.bind) {
+  // Provide a basic bind implementation for browsers that lack Function.bind.
   Function.prototype.bind = function(obj) {
     var slice = [].slice,
         args  = slice.call(arguments, 1),
@@ -28,6 +29,7 @@ if (!Function.prototype.bind) {
 }
 
 if (!Object.create) {
+  // Create an object whose prototype is the supplied base object.
   Object.create = function(base) {
     function F() {};
     F.prototype = base;
@@ -36,6 +38,7 @@ if (!Object.create) {
 }
 
 if (!Object.construct) {
+  // Create an instance and call its optional initialize method.
   Object.construct = function(base) {
     var instance = Object.create(base);
     if (instance.initialize)
@@ -45,6 +48,7 @@ if (!Object.construct) {
 }
 
 if (!Object.extend) {
+  // Copy the source object's own properties onto the destination object.
   Object.extend = function(destination, source) {
     for (var property in source) {
       if (source.hasOwnProperty(property))
@@ -72,6 +76,7 @@ if (!window.requestAnimationFrame) {// http://paulirish.com/2011/requestanimatio
 
 Game = {
 
+  // Check that the browser has the APIs this game needs before starting.
   compatible: function() {
     return Object.create &&
            Object.extend &&
@@ -80,11 +85,13 @@ Game = {
            Game.ua.hasCanvas
   },
 
+  // Build the game runner and return the initialized game instance.
   start: function(id, game, cfg) {
     if (Game.compatible())
       return Object.construct(Game.Runner, id, game, cfg).game; // return the game instance, not the runner (caller can always get at the runner via game.runner)
   },
 
+  // Detect browser details and the availability of canvas and audio support.
   ua: function() { // should avoid user agent sniffing... but sometimes you just gotta do what you gotta do
     var ua  = navigator.userAgent.toLowerCase();
     var key =        ((ua.indexOf("opera")   > -1) ? "opera"   : null);
@@ -116,6 +123,7 @@ Game = {
   addEvent:    function(obj, type, fn) { obj.addEventListener(type, fn, false);    },
   removeEvent: function(obj, type, fn) { obj.removeEventListener(type, fn, false); },
 
+  // Run a callback once the document has finished loading.
   ready: function(fn) {
     if (Game.compatible())
       Game.addEvent(document, 'DOMContentLoaded', fn);
@@ -135,7 +143,8 @@ Game = {
     }
   },
 
-  loadImages: function(sources, callback) { /* load multiple images and callback when ALL have finished loading */
+  // Load a set of images, calling back after every image has loaded.
+  loadImages: function(sources, callback) {
     var images = {};
     var count = sources ? sources.length : 0;
     if (count == 0) {
@@ -190,6 +199,7 @@ Game = {
 
   Runner: {
 
+    // Prepare the canvas, drawing buffers, event handlers, and game instance.
     initialize: function(id, game, cfg) {
       this.cfg          = Object.extend(game.Defaults || {}, cfg || {}); // use game defaults (if any) and extend with custom cfg (if any)
       this.fps          = this.cfg.fps || 60;
@@ -211,15 +221,18 @@ Game = {
       this.game = Object.construct(game, this, this.cfg); // finally construct the game object itself
     },
 
+    // Start the timer that drives the game's update-and-draw loop.
     start: function() { // game instance should call runner.start() when its finished initializing and is ready to start the game loop
       this.lastFrame = Game.timestamp();
       this.timer     = setInterval(this.loop.bind(this), this.interval);
     },
 
+    // Stop the timer without destroying the runner or game state.
     stop: function() {
       clearInterval(this.timer);
     },
 
+    // Update and render one frame, then record timing statistics.
     loop: function() {
       var start  = Game.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
       var middle = Game.timestamp(); this.draw();
@@ -233,6 +246,7 @@ Game = {
     },
 
     draw: function() {
+      // Draw off-screen first to avoid showing partially rendered frames.
       this.back2d.clearRect(0, 0, this.width, this.height);
       this.game.draw(this.back2d);
       this.drawStats(this.back2d);
@@ -272,6 +286,7 @@ Game = {
     },
 
     addEvents: function() {
+      // Forward keyboard input to the game object when handlers are provided.
       Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
     },

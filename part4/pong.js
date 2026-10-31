@@ -110,7 +110,7 @@ Pong = {
       case Game.KEY.ZERO: this.startDemo();            break;
       case Game.KEY.ONE:  this.startSinglePlayer();    break;
       case Game.KEY.TWO:  this.startDoublePlayer();    break;
-      case Game.KEY.ESC:  this.stop(true);             break;
+      case Game.KEY.ESC:  this.stop();                 break;
       case Game.KEY.Q:    this.leftPaddle.moveUp();    break;
       case Game.KEY.A:    this.leftPaddle.moveDown();  break;
       case Game.KEY.P:    this.rightPaddle.moveUp();   break;

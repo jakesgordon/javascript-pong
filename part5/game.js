@@ -13,6 +13,7 @@
 //=============================================================================
 
 if (!Function.prototype.bind) {
+  // Bind a function to a receiver and preserve any arguments supplied up front.
   Function.prototype.bind = function(obj) {
     var slice = [].slice,
         args  = slice.call(arguments, 1),
@@ -28,6 +29,7 @@ if (!Function.prototype.bind) {
 }
 
 if (!Object.create) {
+  // Create an object that inherits from the supplied base object.
   Object.create = function(base) {
     function F() {};
     F.prototype = base;
@@ -36,6 +38,7 @@ if (!Object.create) {
 }
 
 if (!Object.construct) {
+  // Create an inherited instance and invoke its optional initialize method.
   Object.construct = function(base) {
     var instance = Object.create(base);
     if (instance.initialize)
@@ -45,6 +48,7 @@ if (!Object.construct) {
 }
 
 if (!Object.extend) {
+  // Copy only the source object's own properties onto the destination.
   Object.extend = function(destination, source) {
     for (var property in source) {
       if (source.hasOwnProperty(property))
@@ -72,6 +76,7 @@ if (!window.requestAnimationFrame) {// http://paulirish.com/2011/requestanimatio
 
 Game = {
 
+  // Ensure the browser supports the APIs required by this game.
   compatible: function() {
     return Object.create &&
            Object.extend &&
@@ -80,11 +85,13 @@ Game = {
            Game.ua.hasCanvas
   },
 
+  // Create the runner and return its game instance if the browser is supported.
   start: function(id, game, cfg) {
     if (Game.compatible())
       return Object.construct(Game.Runner, id, game, cfg).game; // return the game instance, not the runner (caller can always get at the runner via game.runner)
   },
 
+  // Collect basic browser and feature information for compatibility checks.
   ua: function() { // should avoid user agent sniffing... but sometimes you just gotta do what you gotta do
     var ua  = navigator.userAgent.toLowerCase();
     var key =        ((ua.indexOf("opera")   > -1) ? "opera"   : null);
@@ -113,18 +120,22 @@ Game = {
     }
   }(),
 
+  // Keep event registration and removal consistent across the game code.
   addEvent:    function(obj, type, fn) { obj.addEventListener(type, fn, false);    },
   removeEvent: function(obj, type, fn) { obj.removeEventListener(type, fn, false); },
 
+  // Wait for the DOM to be ready before starting the game.
   ready: function(fn) {
     if (Game.compatible())
       Game.addEvent(document, 'DOMContentLoaded', fn);
   },
 
+  // Create the canvas used as an off-screen drawing buffer.
   createCanvas: function() {
     return document.createElement('canvas');
   },
 
+  // Create a quiet audio element; return null if audio cannot be initialized.
   createAudio: function(src) {
     try {
       var a = new Audio(src);
@@ -135,7 +146,8 @@ Game = {
     }
   },
 
-  loadImages: function(sources, callback) { /* load multiple images and callback when ALL have finished loading */
+  // Load all requested images and call back once every image has loaded.
+  loadImages: function(sources, callback) {
     var images = {};
     var count = sources ? sources.length : 0;
     if (count == 0) {
@@ -152,15 +164,18 @@ Game = {
     }
   },
 
+  // Return a random number in the half-open interval [min, max).
   random: function(min, max) {
     return (min + (Math.random() * (max - min)));
   },
 
+  // Return the current time in milliseconds.
   timestamp: function() { 
     return new Date().getTime();
   },
 
   KEY: {
+    // Key-code constants used by game input handlers.
     BACKSPACE: 8,
     TAB:       9,
     RETURN:   13,
@@ -190,6 +205,7 @@ Game = {
 
   Runner: {
 
+    // Configure the display buffers, input events, statistics, and game instance.
     initialize: function(id, game, cfg) {
       this.cfg          = Object.extend(game.Defaults || {}, cfg || {}); // use game defaults (if any) and extend with custom cfg (if any)
       this.fps          = this.cfg.fps || 60;
@@ -211,15 +227,18 @@ Game = {
       this.game = Object.construct(game, this, this.cfg); // finally construct the game object itself
     },
 
+    // Begin the recurring game loop; the game calls this after initialization.
     start: function() { // game instance should call runner.start() when its finished initializing and is ready to start the game loop
       this.lastFrame = Game.timestamp();
       this.timer     = setInterval(this.loop.bind(this), this.interval);
     },
 
+    // Stop the recurring loop while retaining the current game state.
     stop: function() {
       clearInterval(this.timer);
     },
 
+    // Advance the game, render a frame, and measure the time spent on each.
     loop: function() {
       var start  = Game.timestamp(); this.update((start - this.lastFrame)/1000.0); // send dt as seconds
       var middle = Game.timestamp(); this.draw();
@@ -228,11 +247,13 @@ Game = {
       this.lastFrame = start;
     },
 
+    // Delegate time-based game logic to the active game object.
     update: function(dt) {
       this.game.update(dt);
     },
 
     draw: function() {
+      // Render to the back buffer, then copy the completed frame to the screen.
       this.back2d.clearRect(0, 0, this.width, this.height);
       this.game.draw(this.back2d);
       this.drawStats(this.back2d);
@@ -240,6 +261,7 @@ Game = {
       this.front2d.drawImage(this.back, 0, 0);
     },
 
+    // Initialize performance counters before the first frame is drawn.
     resetStats: function() {
       this.stats = {
         count:  0,
@@ -250,6 +272,7 @@ Game = {
       };
     },
 
+    // Update frame timing and estimated FPS when statistics are enabled.
     updateStats: function(update, draw) {
       if (this.cfg.stats) {
         this.stats.update = Math.max(1, update);
@@ -260,6 +283,7 @@ Game = {
       }
     },
 
+    // Display the current frame count, FPS, and update/draw timings.
     drawStats: function(ctx) {
       if (this.cfg.stats) {
         ctx.fillStyle = 'white';
@@ -271,6 +295,7 @@ Game = {
       }
     },
 
+    // Listen for keyboard input and forward it to optional game handlers.
     addEvents: function() {
       Game.addEvent(document, 'keydown', this.onkeydown.bind(this));
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
@@ -279,10 +304,12 @@ Game = {
     onkeydown: function(ev) { if (this.game.onkeydown) this.game.onkeydown(ev.keyCode); },
     onkeyup:   function(ev) { if (this.game.onkeyup)   this.game.onkeyup(ev.keyCode);   },
 
+    // Let the game hide the pointer during active play and restore it afterward.
     hideCursor: function() { this.canvas.style.cursor = 'none'; },
     showCursor: function() { this.canvas.style.cursor = 'auto'; },
 
     alert: function(msg) {
+      // Pause around blocking dialogs so the next update does not receive a huge dt.
       this.stop(); // alert blocks thread, so need to stop game loop in order to avoid sending huge dt values to next update
       result = window.alert(msg);
       this.start();
@@ -290,6 +317,7 @@ Game = {
     },
 
     confirm: function(msg) {
+      // Pause around blocking dialogs so the next update does not receive a huge dt.
       this.stop(); // alert blocks thread, so need to stop game loop in order to avoid sending huge dt values to next update
       result = window.confirm(msg);
       this.start();

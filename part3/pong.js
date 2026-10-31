@@ -4,6 +4,7 @@
 
 Pong = {
 
+  // Default dimensions and movement settings for the game.
   Defaults: {
     width:        640,   // logical canvas width (browser will scale to physical canvas size - which is controlled by @media css queries)
     height:       480,   // logical canvas height (ditto)
@@ -23,6 +24,7 @@ Pong = {
     score: 'white'
   },
 
+  // Preload these prompts so the menu can draw them after initialization.
   Images: [
     "images/press1.png",
     "images/press2.png",
@@ -31,6 +33,7 @@ Pong = {
 
   //-----------------------------------------------------------------------------
 
+  // Wait for images to load, then create the game objects and start the loop.
   initialize: function(runner, cfg) {
     Game.loadImages(Pong.Images, function(images) {
       this.cfg         = cfg;
@@ -49,12 +52,14 @@ Pong = {
     }.bind(this));
   },
 
+  // Public shortcuts for the three available play modes.
   startDemo:         function() { this.start(0); },
   startSinglePlayer: function() { this.start(1); },
   startDoublePlayer: function() { this.start(2); },
 
   start: function(numPlayers) {
     if (!this.playing) {
+      // Reset the match and hide the cursor while a game is active.
       this.scores = [0, 0];
       this.playing = true;
       this.ball.reset();
@@ -64,6 +69,7 @@ Pong = {
 
   stop: function(ask) {
     if (this.playing) {
+      // Optionally confirm before abandoning the current match.
       if (!ask || this.runner.confirm('Abandon game in progress ?')) {
         this.playing = false;
         this.runner.showCursor();
@@ -73,6 +79,7 @@ Pong = {
 
   goal: function(playerNo) {
     this.scores[playerNo] += 1;
+    // This version ends the match as soon as either player scores once.
     if (this.scores[playerNo] == 1) {
       this.menu.declareWinner(playerNo);
       this.stop();
@@ -83,6 +90,7 @@ Pong = {
   },
 
   update: function(dt) {
+    // Update paddles even during the menu; move the ball only during play.
     this.leftPaddle.update(dt, this.ball);
     this.rightPaddle.update(dt, this.ball);
     if (this.playing) {
@@ -98,6 +106,7 @@ Pong = {
   },
 
   draw: function(ctx) {
+    // Draw the court and paddles first, then the ball or start menu.
     this.court.draw(ctx, this.scores[0], this.scores[1]);
     this.leftPaddle.draw(ctx);
     this.rightPaddle.draw(ctx);
@@ -108,11 +117,12 @@ Pong = {
   },
 
   onkeydown: function(keyCode) {
+    // Start/stop games or begin moving a paddle when a key is pressed.
     switch(keyCode) {
       case Game.KEY.ZERO: this.startDemo();            break;
       case Game.KEY.ONE:  this.startSinglePlayer();    break;
       case Game.KEY.TWO:  this.startDoublePlayer();    break;
-      case Game.KEY.ESC:  this.stop(true);             break;
+      case Game.KEY.ESC:  this.stop();                 break;
       case Game.KEY.Q:    this.leftPaddle.moveUp();    break;
       case Game.KEY.A:    this.leftPaddle.moveDown();  break;
       case Game.KEY.P:    this.rightPaddle.moveUp();   break;
@@ -121,6 +131,7 @@ Pong = {
   },
 
   onkeyup: function(keyCode) {
+    // Stop paddle movement when its corresponding key is released.
     switch(keyCode) {
       case Game.KEY.Q: this.leftPaddle.stopMovingUp();    break;
       case Game.KEY.A: this.leftPaddle.stopMovingDown();  break;
@@ -135,6 +146,7 @@ Pong = {
 
   Menu: {
 
+    // Position the menu and winner images relative to the court dimensions.
     initialize: function(pong) {
       var press1 = pong.images["images/press1.png"];
       var press2 = pong.images["images/press2.png"];
@@ -150,6 +162,7 @@ Pong = {
     },
 
     draw: function(ctx) {
+      // Show both start prompts and the winner prompt, if one is set.
       ctx.drawImage(this.press1.image, this.press1.x, this.press1.y);
       ctx.drawImage(this.press2.image, this.press2.x, this.press2.y);
       if (this.winner == 0)
@@ -166,6 +179,7 @@ Pong = {
 
   Court: {
 
+    // Build the top/bottom walls, center dashes, and score display positions.
     initialize: function(pong) {
       var w  = pong.width;
       var h  = pong.height;
@@ -189,6 +203,7 @@ Pong = {
     },
 
     draw: function(ctx, scorePlayer1, scorePlayer2) {
+      // Render court rectangles, then draw each player's score.
       ctx.fillStyle = Pong.Colors.walls;
       for(var n = 0 ; n < this.walls.length ; n++)
         ctx.fillRect(this.walls[n].x, this.walls[n].y, this.walls[n].width, this.walls[n].height);
@@ -199,6 +214,7 @@ Pong = {
     drawDigit: function(ctx, n, x, y, w, h) {
       ctx.fillStyle = Pong.Colors.score;
       var dw = dh = this.ww*4/5;
+      // Each digit is formed from seven segments, enabled by its lookup pattern.
       var blocks = Pong.Court.DIGITS[n];
       if (blocks[0])
         ctx.fillRect(x, y, w, dh);
@@ -237,6 +253,7 @@ Pong = {
 
   Paddle: {
 
+    // Set paddle bounds, speed, starting position, and stationary direction.
     initialize: function(pong, rhs) {
       this.pong   = pong;
       this.width  = pong.cfg.paddleWidth;
@@ -263,6 +280,7 @@ Pong = {
     },
 
     update: function(dt, ball) {
+      // Apply vertical input while keeping the paddle between the court walls.
       var amount = this.down - this.up;
       if (amount != 0) {
         var y = this.y + (amount * dt * this.speed);
@@ -292,6 +310,7 @@ Pong = {
 
   Ball: {
 
+    // Cache the ball's size, legal travel bounds, speed, and acceleration.
     initialize: function(pong) {
       this.pong    = pong;
       this.radius  = pong.cfg.ballRadius;
@@ -304,6 +323,7 @@ Pong = {
     },
 
     reset: function(playerNo) {
+      // Serve from the edge opposite the last scorer, with a random vertical position.
       this.setpos(playerNo == 1 ?   this.maxX : this.minX,  Game.random(this.minY, this.maxY));
       this.setdir(playerNo == 1 ? -this.speed : this.speed, this.speed);
     },
@@ -324,8 +344,10 @@ Pong = {
 
     update: function(dt, leftPaddle, rightPaddle) {
 
+      // Calculate the next position and velocity using the acceleration helper.
       pos = Pong.Helper.accelerate(this.x, this.y, this.dx, this.dy, this.accel, dt);
 
+      // Reflect the ball vertically when it reaches the top or bottom boundary.
       if ((pos.dy > 0) && (pos.y > this.maxY)) {
         pos.y = this.maxY;
         pos.dy = -pos.dy;
@@ -342,6 +364,7 @@ Pong = {
     draw: function(ctx) {
       var w = h = this.radius * 2;
       ctx.fillStyle = Pong.Colors.ball;
+      // Draw the ball as a square centered on its position.
       ctx.fillRect(this.x - this.radius, this.y - this.radius, w, h);
     }
 
@@ -353,6 +376,7 @@ Pong = {
 
   Helper: {
 
+    // Apply constant acceleration over dt and return the next position and velocity.
     accelerate: function(x, y, dx, dy, accel, dt) {
       var x2  = x + (dt * dx) + (accel * dt * dt * 0.5);
       var y2  = y + (dt * dy) + (accel * dt * dt * 0.5);

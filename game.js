@@ -274,8 +274,22 @@ Game = {
       Game.addEvent(document, 'keyup',   this.onkeyup.bind(this));
     },
 
-    onkeydown: function(ev) { if (this.game.onkeydown) this.game.onkeydown(ev.keyCode); },
-    onkeyup:   function(ev) { if (this.game.onkeyup)   this.game.onkeyup(ev.keyCode);   },
+    // Prefer modern key names, falling back to legacy numeric key codes.
+    onkeydown: function(ev) {
+      var keyCode = ev.keyCode || ev.which;
+      if (ev.key === 'Escape' || ev.key.toLowerCase() === 'x')
+        keyCode = Game.KEY.ESC;
+      if (this.game.onkeydown)
+        this.game.onkeydown(keyCode);
+    },
+
+    onkeyup: function(ev) {
+      var keyCode = ev.keyCode || ev.which;
+      if (ev.key === 'Escape' || ev.key.toLowerCase() === 'x')
+        keyCode = Game.KEY.ESC;
+      if (this.game.onkeyup)
+        this.game.onkeyup(keyCode);
+    },
 
     hideCursor: function() { this.canvas.style.cursor = 'none'; },
     showCursor: function() { this.canvas.style.cursor = 'auto'; },
